@@ -9,14 +9,24 @@ Write to the table when you're setting up the GUI rather than modifying the defa
 To make a GUI element, you first create it with the constructor, then run element:draw() to initialize it.
 
 Constructors:
+
 IconButton({
+
   x = top left x coordinate of the button,
+  
   y = top left y coordinate of the button,
+  
   var = the Mode type variable you want to track (defined in Modes.lua)
+  
   icons = {
+  
     {img = 'file.png', value = 'whatever value of your Mode var the picture corresponds to'},
+    
     {img = 'anotherfile.png', value = 'another value'},
+    
     ...}
+    
   command = a function to be called when a new value is selected, or a string that will be passed to windower.send_command(string)
+  
 })
 
