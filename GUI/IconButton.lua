@@ -17,7 +17,7 @@ function IconButton(args) -- constructs the object, but does not initialize it
 	ib._track._update_event = nil
 	ib._track._pressed = false
 	ib._track._suppress = false
-	ib._track._update_command = args.command -- string
+	ib._track._update_command = args.command -- string or function
 	return setmetatable(ib, _meta.IconButton)	
 end
 
@@ -118,8 +118,10 @@ _meta.IconButton.__methods['update'] = function(ib)
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
 			end
 		end
-		if ib._track._update_command then
+		if type(ib._track._update_command) == 'string' then
 			windower.send_command(ib._track._update_command)
+		elseif type(ib._track._update_command) == 'function' then
+			ib._track._update_command()
 		end
 		ib._track._state = ib._track._var.value
 	end

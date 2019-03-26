@@ -11,7 +11,7 @@ GUI.bound.y.upper = 502
 GUI.nexttime = os.clock()
 GUI.delay = 1
 
-require('coroutine')
+--require('coroutine')
 
 require('GUI/IconPalette')
 require('GUI/IconButton')
@@ -61,11 +61,6 @@ function GUI.unregister_update_object(index)
 end
 
 function GUI.complete_filepath(short)
-	-- CHECK
-	-- windower.addon_path..short
-	-- windower.addon_path..'graphics/'..short
-	-- windower.addon_path..'data/graphics/..short
-	-- windower.windower_path..'addons/libs/GUI/..short
 	for i, path in ipairs{
 		windower.addon_path..short,
 		windower.addon_path..'graphics/'..short,
