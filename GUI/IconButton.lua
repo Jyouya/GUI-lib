@@ -18,6 +18,7 @@ function IconButton(args) -- constructs the object, but does not initialize it
 	ib._track._pressed = false
 	ib._track._suppress = false
 	ib._track._update_command = args.command -- string or function
+	ib._track._disabled = args.disabled or false
 	return setmetatable(ib, _meta.IconButton)	
 end
 
@@ -62,6 +63,7 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 end
 
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
+	if ib._track._disabled then return end
 	if type == 1 then
 		if ib._track._suppress then
 			ib._track._suppress = false
@@ -83,18 +85,34 @@ _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked
 	end
 end
 
---[[_meta.IconButton.__methods['update'] = function(ib)
-	if ib._track._var.value ~= ib._track._state then
-		self = tostring(ib)
-	
-	if _G[tb._track._var] ~= tb._track._state then
-		
-		windower.prim.set_visibility('%s Up':format(self), not (_G[tb._track._var] ~= tb._track._invert))
-		windower.prim.set_visibility('%s Down':format(self), _G[tb._track._var] ~= tb._track._invert)
-		windower.prim.set_visibility('%s press':format(self), _G[tb._track._var] ~= tb._track._invert)
-		tb._track._state = _G[tb._track._var]
+_meta.IconButton.__methods['hide'] = function(ib)
+	if ib._track._iconPalette.shown then
+		ib._track._iconPalette:hide() -- close this if it's open
 	end
-end]]
+	windower.prim.set_visibility(tostring(ib), false) -- hide the frame
+	windower.prim.set_visibility('%s press':format(tostring(ib)), false) -- hide the blue box
+	for ind, icon in ipairs(ib._track._icons) do
+		windower.prim.set_visibility('%s %s':format(tostring(ib), icon.value), false) -- hide all the icons
+	end -- hide your husbands too
+end
+
+_meta.IconButton.__methods['show'] = function(ib)
+	windower.prim.set_visibility(tostring(ib), true)
+	ib._track._pressed = false -- unpress the button
+	for ind, icon in ipairs(ib._track._icons) do
+		windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), icon.value == ib._track._var.value)
+	end
+end
+
+_meta.IconButton.__methods['disable'] = function(ib)
+	ib._track._disabled = true
+	ib:hide()
+end
+
+_meta.IconButton.__methods['enable'] = function(ib)
+	ib._track._disabled = false
+	ib:show()
+end
 
 _meta.IconButton.__methods['press'] = function(ib)
 	-- visually depress the button
@@ -110,6 +128,7 @@ _meta.IconButton.__methods['unpress'] = function(ib)
 end
 
 _meta.IconButton.__methods['update'] = function(ib)
+	if ib._track._disabled then return end
 	if ib._track._var.value ~= ib._track._state then
 		for ind, icon in ipairs(ib._track._icons) do
 			if icon.value == ib._track._var.value then
@@ -142,7 +161,12 @@ _meta.IconButton.__index = function(ib, k)
     if type(k) == 'string' then
         local lk = k:lower()
 		
+		if lk == 'disabled' then
+			return ib._track._disabled
+		end
+		
 		return _meta.IconButton.__methods[lk]
+		
 		
         --[[if lk == 'current' then
             return m[m._track._current]

@@ -118,13 +118,13 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 				x = tc._track._x - 52 - width,
 				y = tc._track._y + 4
 			}
-			windower.prim.set_position(left, tc._track._leftarrow.x, tc._track._rightarrow.y)
+			windower.prim.set_position(left, tc._track._leftarrow.x, tc._track._leftarrow.y)
 		else
 			tc._track._leftarrow = {
 				x = tc._track._x,
 				y = tc._track._y + 4
 			}
-			windower.prim.set_position(right, tc._track._rightarrow.x, tc._track._rightarrow.y)
+			windower.prim.set_position(left, tc._track._leftarrow.x, tc._track._leftarrow.y)
 			windower.text.set_location(desc, math.floor(tc._track._x + 26 + width/2 - desc_w/2), tc._track._y)
 			
 			for i, v in ipairs(tc._track._var) do
@@ -132,11 +132,11 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 				windower.text.set_visibility('%s %i':format(self, i), i == tc._track._var._track._current)
 			end
 			
-			tc._track._leftarrow = {
+			tc._track._rightarrow = {
 				x = tc._track._x + 29 + width, -- 26 + width + 3 padding
 				y = tc._track._y + 4
 			}
-			windower.prim.set_position(left, tc._track._leftarrow.x, tc._track._rightarrow.y)		
+			windower.prim.set_position(right, tc._track._rightarrow.x, tc._track._rightarrow.y)		
 		end
 		tc._track._mouse_id = GUI.register_mouse_listener(tc)
 		tc._track._drawn = true
