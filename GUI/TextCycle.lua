@@ -143,24 +143,32 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 	end
 end
 
-_meta.TextCycle.__methods['on_mouse'] = function(tc, type, x, y, delta, blocked)
-	if type == 1 then
+_meta.TextCycle.__methods['on_mouse'] = function(tc, clicktype, x, y, delta, blocked)
+	if clicktype == 1 then
 		if x >= tc._track._leftarrow.x and x < tc._track._leftarrow.x + 23 and y >= tc._track._leftarrow.y and y < tc._track._leftarrow.y + 20 then
 			tc._track._var:cycleback()
 			tc:update()
 			if tc._track._update_command then
-				windower.send_command(tc._track._update_command)
+				if type(tc._track._update_command) == 'string' then
+					windower.send_command(tc._track._update_command)
+				elseif type(tc._track._update_command) == 'function' then
+					tc._track._update_command()
+				end
 			end
 			return true
 		elseif x >= tc._track._rightarrow.x and x < tc._track._rightarrow.x + 23 and y >= tc._track._rightarrow.y and y < tc._track._rightarrow.y + 20 then
 			tc._track._var:cycle()
 			tc:update()
 			if tc._track._update_command then
-				windower.send_command(tc._track._update_command)
+				if type(tc._track._update_command) == 'string' then
+					windower.send_command(tc._track._update_command)
+				elseif type(tc._track._update_command) == 'function' then
+					tc._track._update_command()
+				end
 			end
 			return true
 		end
-	elseif type == 2 then
+	elseif clicktype == 2 then
 		if x >= tc._track._leftarrow.x and x < tc._track._leftarrow.x + 23 and y >= tc._track._leftarrow.y and y < tc._track._leftarrow.y + 20 then
 			return true
 		elseif x >= tc._track._rightarrow.x and x < tc._track._rightarrow.x + 23 and y >= tc._track._rightarrow.y and y < tc._track._rightarrow.y + 20 then

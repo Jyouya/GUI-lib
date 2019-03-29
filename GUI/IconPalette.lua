@@ -108,7 +108,7 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 				for ind, icon in ipairs(ip._track._icons) do
 					if y > ip._track._y + 5 + 40 * (ind - 1) and y < ip._track._y + 37 + 40 * (ind - 1) then
 						ip._track._var:set(icon.value)	-- var is a mode from Modes.lua
-						ip._track._button:update()
+						ip._track._button:select()
 						ip._track._button:unpress()
 						--ip:hide()
 						ip._track._click = true

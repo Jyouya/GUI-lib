@@ -19,6 +19,9 @@ function IconButton(args) -- constructs the object, but does not initialize it
 	ib._track._suppress = false
 	ib._track._update_command = args.command -- string or function
 	ib._track._disabled = args.disabled or false
+	ib._track._overlay = args.overlay --{img=filepath, hide_on_click = true}
+	ib._track._show_overlay = false
+	ib._track._on_click = args.on_click
 	return setmetatable(ib, _meta.IconButton)	
 end
 
@@ -45,9 +48,20 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 		windower.prim.set_position(name, ib._track._x + 5, ib._track._y + 5)
 		windower.prim.set_texture(name, GUI.complete_filepath(icon.img))
 		windower.prim.set_fit_to_texture(name, true)
-	end
+	end	
 	-- display the icon that is currently active
 	windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
+	
+	-- draw overlay
+	if ib._track._overlay then
+		local overlay = '%s overlay':format(self)
+		windower.prim.create(overlay)
+		windower.prim.set_visibility(overlay, false)
+		windower.prim.set_position(overlay, ib._track._x + 5, ib._track._y + 5)
+		windower.prim.set_texture(overlay, GUI.complete_filepath(ib._track._overlay.img))
+		windower.prim.set_fit_to_texture(overlay, true)
+	end
+	
 	-- Initialize and draw the IconPalette
 	ib._track._iconPalette = IconPalette{
 		x		= ib._track._x - 54,
@@ -70,6 +84,12 @@ _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked
 			return true
 		end
 		if x > ib._track._x and x < ib._track._x + 42 and y > ib._track._y and y < ib._track._y + 42 then
+			if ib._track._overlay and ib._track._overlay.hide_on_click and ib._track._show_overlay then
+				ib:hideoverlay()
+			end
+			if ib._track._on_click then
+				ib._track._on_click()
+			end
 			if ib._track._pressed then
 				--ib:unpress()
 				return true
@@ -94,6 +114,9 @@ _meta.IconButton.__methods['hide'] = function(ib)
 	for ind, icon in ipairs(ib._track._icons) do
 		windower.prim.set_visibility('%s %s':format(tostring(ib), icon.value), false) -- hide all the icons
 	end -- hide your husbands too
+	if ib._track._overlay then
+		ib:hideoverlay()
+	end
 end
 
 _meta.IconButton.__methods['show'] = function(ib)
@@ -102,6 +125,16 @@ _meta.IconButton.__methods['show'] = function(ib)
 	for ind, icon in ipairs(ib._track._icons) do
 		windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), icon.value == ib._track._var.value)
 	end
+end
+
+_meta.IconButton.__methods['showoverlay'] = function(ib)
+	windower.prim.set_visibility('%s overlay':format(tostring(ib)), true)
+	ib._track._show_overlay = true
+end
+
+_meta.IconButton.__methods['hideoverlay'] = function(ib)
+	windower.prim.set_visibility('%s overlay':format(tostring(ib)), false)
+	ib._track._show_overlay = false
 end
 
 _meta.IconButton.__methods['disable'] = function(ib)
@@ -127,7 +160,7 @@ _meta.IconButton.__methods['unpress'] = function(ib)
 	ib._track._iconPalette:hide()
 end
 
-_meta.IconButton.__methods['update'] = function(ib)
+_meta.IconButton.__methods['select'] = function(ib)
 	if ib._track._disabled then return end
 	if ib._track._var.value ~= ib._track._state then
 		for ind, icon in ipairs(ib._track._icons) do
@@ -141,6 +174,20 @@ _meta.IconButton.__methods['update'] = function(ib)
 			windower.send_command(ib._track._update_command)
 		elseif type(ib._track._update_command) == 'function' then
 			ib._track._update_command()
+		end
+		ib._track._state = ib._track._var.value
+	end
+end
+
+_meta.IconButton.__methods['update'] = function(ib)
+	if ib._track._disabled then return end
+	if ib._track._var.value ~= ib._track._state then
+		for ind, icon in ipairs(ib._track._icons) do
+			if icon.value == ib._track._var.value then
+				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), true)
+			else
+				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
+			end
 		end
 		ib._track._state = ib._track._var.value
 	end
@@ -163,6 +210,10 @@ _meta.IconButton.__index = function(ib, k)
 		
 		if lk == 'disabled' then
 			return ib._track._disabled
+		end
+		
+		if lk == 'command' then
+			return ib._track._update_command
 		end
 		
 		return _meta.IconButton.__methods[lk]
