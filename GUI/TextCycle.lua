@@ -28,6 +28,9 @@ function TextCycle(args) -- constructs the object, but does not initialize it
 	
 	tc._track._update_command = args.command
 	
+	tc._track._disabled = args.disabled
+	tc._track._start_hidden = args.start_hidden
+	
 	return setmetatable(tc, _meta.TextCycle)	
 end
 
@@ -72,9 +75,38 @@ _meta.TextCycle.__methods['draw'] = function(tc) -- Finishes initialization and 
 	
 end
 
+_meta.TextCycle.__methods['hide'] = function(tc)
+	self = tostring(tc)
+	windower.text.set_visibility('%s desc':format(self), false)
+	windower.prim.set_visibility('%s left':format(self), false)
+	windower.prim.set_visibility('%s right':format(self), false)
+	for i, v in ipairs(tc._track._var) do
+		windower.text.set_visibility('%s %i':format(self, i), false)
+	end
+end
+
+_meta.TextCycle.__methods['show'] = function(tc)
+	self = tostring(tc)
+	windower.text.set_visibility('%s desc':format(self), true)
+	windower.prim.set_visibility('%s left':format(self), true)
+	windower.prim.set_visibility('%s right':format(self), true)	
+	for i, v in ipairs(tc._track._var) do
+		windower.text.set_visibility('%s %i':format(self, i), i == tc._track._var._track._current)
+	end
+end
+
+_meta.TextCycle.__methods['disable'] = function(tc)
+	tc._track._disabled = true
+end
+
+_meta.TextCycle.__methods['enable'] = function(tc)
+	tc._track._disabled = false
+end
+
 _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization and draws the graphics
 	local self = tostring(tc)
 	if tc._track._drawn then
+		if tc._track._disabled then return end
 		for i, v in ipairs(tc._track._var) do
 			windower.text.set_visibility('%s %i':format(self, i), i == tc._track._var._track._current)
 		end
@@ -140,10 +172,15 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 		end
 		tc._track._mouse_id = GUI.register_mouse_listener(tc)
 		tc._track._drawn = true
+		
+		if tc._track._start_hidden then
+			tc:hide()
+		end
 	end
 end
 
 _meta.TextCycle.__methods['on_mouse'] = function(tc, clicktype, x, y, delta, blocked)
+	if tc._track._disabled then return end
 	if clicktype == 1 then
 		if x >= tc._track._leftarrow.x and x < tc._track._leftarrow.x + 23 and y >= tc._track._leftarrow.y and y < tc._track._leftarrow.y + 20 then
 			tc._track._var:cycleback()
