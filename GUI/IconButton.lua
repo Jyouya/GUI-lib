@@ -139,12 +139,12 @@ end
 
 _meta.IconButton.__methods['disable'] = function(ib)
 	ib._track._disabled = true
-	ib:hide()
+	--ib:hide()
 end
 
 _meta.IconButton.__methods['enable'] = function(ib)
 	ib._track._disabled = false
-	ib:show()
+	--ib:show()
 end
 
 _meta.IconButton.__methods['press'] = function(ib)
