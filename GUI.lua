@@ -7,7 +7,7 @@ GUI.bound = {}
 GUI.bound.x = nil
 GUI.bound.y = {}
 GUI.bound.y.lower = 80
-GUI.bound.y.upper = 502
+GUI.bound.y.upper = 500
 GUI.nexttime = os.clock()
 GUI.delay = 1
 
@@ -18,6 +18,8 @@ require('GUI/IconButton')
 require('GUI/ToggleButton')
 require('GUI/PassiveText')
 require('GUI/TextCycle')
+require('GUI/PopupSlider')
+require('GUI/SliderButton')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false

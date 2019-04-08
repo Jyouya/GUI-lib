@@ -197,7 +197,7 @@ function palette_y_align(y, size)
 	y_size = 40 * size + 2
 	if y - y_size/2 + 21 < GUI.bound.y.lower then
 		return GUI.bound.y.lower
-	elseif y + y_size/2 > GUI.bound.y.upper then
+	elseif y + y_size/2 + 21 > GUI.bound.y.upper then
 		return GUI.bound.y.upper - y_size
 	else
 		return y - y_size/2 + 21
