@@ -17,6 +17,7 @@ function PassiveText(args, ...) -- constructs the object, but does not initializ
 	pt._track._var = {...}
 	pt._track._font = args.font or 'Helvetica'
 	pt._track._font_size = args.font_size or 10
+	pt._track._color = args.color or {255,253,252,250}
 	
 	pt._track._align = args.align:lower() or 'left'
 	
@@ -47,7 +48,7 @@ end
 
 _meta.PassiveText.__methods['update'] = function(pt)
 	--windower.text.set_text(tostring(pt), 'RH Weaponskill: %s':format(_G[pt._track._var] or 'None'))	
-	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) return _G[x] or 'None' end)))
+	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() end end)))
 end
 
 _meta.PassiveText.__index = function(pt, k)
