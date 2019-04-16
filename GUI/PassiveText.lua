@@ -38,7 +38,7 @@ _meta.PassiveText.__methods['draw'] = function(pt) -- Finishes initialization an
 	windower.text.set_location(self, pt._track._x, pt._track._y)
 	windower.text.set_right_justified(self, pt._track._align == 'right')
 	--windower.text.set_text(self, 'RH Weaponskill: %s':format(_G[pt._track._var] or 'None'))--pt._track._var or 'None')
-	windower.text.set_text(self, (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) return _G[x] or 'None' end)))
+	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end)))
 	windower.text.set_visibility(self, true)
 	
 	--print(windower.text.get_extents(self))
@@ -49,7 +49,7 @@ end
 
 _meta.PassiveText.__methods['update'] = function(pt)
 	--windower.text.set_text(tostring(pt), 'RH Weaponskill: %s':format(_G[pt._track._var] or 'None'))	
-	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() end end)))
+	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end)))
 end
 
 _meta.PassiveText.__index = function(pt, k)
