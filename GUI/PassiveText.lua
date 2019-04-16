@@ -52,12 +52,12 @@ _meta.PassiveText.__methods['update'] = function(pt)
 	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end)))
 end
 
-_meta._PassiveText.__methods['recolor'] = function(pt, alpha, red, green, blue)
+_meta.PassiveText.__methods['recolor'] = function(pt, alpha, red, green, blue)
 	pt._track._color = {alpha, red, green, blue}
 	windower.text.set_color(tostring(pt), alpha, red, green, blue)
 end
 
-_meta._PassiveText.__methods['restroke'] = function(pt, alpha, red, green, blue)
+_meta.PassiveText.__methods['restroke'] = function(pt, alpha, red, green, blue)
 	pt._track._stroke_color = {alpha, red, green, blue}
 	windower.text.set_stroke_color(tostring(pt), alpha, red, green, blue)
 end
