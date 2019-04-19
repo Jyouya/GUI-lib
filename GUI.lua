@@ -1,6 +1,7 @@
 GUI = {}
 GUI.mouse_listeners = {}
 GUI.update_objects = {}
+GUI.postrender_objects = {}
 GUI.mouse_index = 1
 GUI.update_index = 1
 GUI.bound = {}
@@ -22,6 +23,7 @@ require('GUI/PopupSlider')
 require('GUI/SliderButton')
 require('GUI/FunctionButton')
 require('GUI/Divider')
+require('GUI/TextTable')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false
@@ -54,6 +56,20 @@ function GUI.on_prerender()
 	end
 end
 
+function GUI.on_postrender()
+	for obj, _ in pairs(GUI.postrender_objects) do
+		obj:postrender()
+	end
+end
+
+function GUI.subscribe_postrender(obj)
+	GUI.postrender_objects[obj] = obj
+end
+
+function GUI.unsubscribe_postrender(obj)
+	GUI.postrender_objects[obj] = nil
+end
+
 function GUI.register_update_object(obj)
 	GUI.update_objects[GUI.update_index] = obj
 	GUI.update_index = GUI.update_index + 1
@@ -80,10 +96,13 @@ function GUI.complete_filepath(short)
 	end
 	print('%s not found':format(short))
 end
+
 if windower.raw_register_event then
 	windower.raw_register_event('mouse', GUI.on_mouse_event)
 	windower.raw_register_event('prerender', GUI.on_prerender)
+	windower.raw_register_event('postrender', GUI.on_postrender)
 else
 	windower.register_event('mouse', GUI.on_mouse_event)
 	windower.register_event('prerender', GUI.on_prerender)
+	windower.register_event('postrender', GUI.on_postrender)
 end
