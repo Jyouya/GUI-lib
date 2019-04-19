@@ -120,7 +120,7 @@ _meta.TextTable.__methods['refresh_values'] = function(tt) -- update the values 
 		for colindex, colkey in ipairs(tt._track._columns) do
 			local value = tt._track._var[rowkey][colkey]
 			-- value is either a static thing to be displayed, or a function that returns the thing to be displayed
-			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value() or value or '')
+			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value({row=rowindex, col=colindex}) or value or '')
 		end
 	end
 end
