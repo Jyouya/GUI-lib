@@ -21,6 +21,7 @@ require('GUI/TextCycle')
 require('GUI/PopupSlider')
 require('GUI/SliderButton')
 require('GUI/FunctionButton')
+require('GUI/Divider')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false
