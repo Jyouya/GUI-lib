@@ -76,26 +76,30 @@ _meta.TextTable.__methods['draw'] = function(tt)
 end
 
 _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
-	tt._track._table[row][column].style = style
+	local newstyle = GUI.layerstyle(tt._track._table[row][column].style, style)
+	tt._track._table[row][column].style = newstyle
 	if tt._track._auto_update then
-		GUI.styletext('%s %d %d':format(tostring(tt), row, column), style)
+		GUI.styletext('%s %d %d':format(tostring(tt), row, column), newstyle)
 	end
 end
 
 _meta.TextTable.__methods['style_row'] = function(tt, row, style)
+	
 	for colindex, colkey in ipairs(tt._track._columns) do
-		tt._track._table[row][colindex].style = style
+		local newstyle = GUI.layerstyle(tt._track._table[row][colindex].style, style)
+		tt._track._table[row][colindex].style = newstyle
 		if tt._track._auto_update then
-			GUI.styletext('%s %d %d':format(tostring(tt), row, colindex), style)
+			GUI.styletext('%s %d %d':format(tostring(tt), row, colindex), newstyle)
 		end
 	end
 end
 
 _meta.TextTable.__methods['style_column'] = function(tt, col, style)
 	for rowindex, rowkey in ipairs(tt._track._rows) do
-		tt._track._table[rowindex][col].style = style
+		local newstyle = GUI.layerstyle(tt._track._table[rowindex][col].style, style)
+		tt._track._table[rowindex][col].style = newstyle
 		if tt._track._auto_update then
-			GUI.styletext('%s %d %d':format(tostring(tt), rowindex, col), style)
+			GUI.styletext('%s %d %d':format(tostring(tt), rowindex, col), newstyle)
 		end
 	end
 end
@@ -119,6 +123,7 @@ _meta.TextTable.__methods['refresh_values'] = function(tt) -- update the values 
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		for colindex, colkey in ipairs(tt._track._columns) do
 			local value = tt._track._var[rowkey][colkey]
+			tt._track._table[rowindex][colindex].value = value
 			-- value is either a static thing to be displayed, or a function that returns the thing to be displayed
 			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value({row=rowindex, col=colindex}) or value or '')
 		end
@@ -253,6 +258,14 @@ function GUI.styletext(textname, style)
 	windower.text.set_right_justified(textname, style.align == 'right')
 end
 
+function GUI.layerstyle(bottom, top)
+	local n = {}
+	for i, v in ipairs({'font', 'font_size', 'color', 'bold', 'stroke', 'stroke_width', 'stroke_color', 'align'}) do
+		n = top[v] or bottom[v]
+	end
+	return n
+end
+
 function GUI.range(min, max)
 	local l = {}
 	local i = 1
@@ -267,5 +280,7 @@ _meta.TextTable.__index = function(tt, k)
 	if type(k) == 'string' then
 		local lk = k:lower()
 		return _meta.TextTable.__methods[lk]
+	elseif type(k) == 'number' then
+		return tt._track._table[k]
 	end
 end
