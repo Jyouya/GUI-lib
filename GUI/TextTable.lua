@@ -11,10 +11,11 @@ function TextTable(args)
 	tt._track._x = args.x
 	tt._track._y = args.y
 	
-	tt._track._height = args.height
+	tt._track._height = args.height or #args.var
+	tt._track._auto_height = args.auto_height
 	tt._track._width = args.width -- in cells
-	tt._track._columns = args.columns or GUI.range(1, args.width)
-	tt._track._rows = args.rows or GUI.range(1, args.height)
+	tt._track._columns = args.columns -- not an optional argument
+	tt._track._rows = args.rows or GUI.range(1, tt._track._height)
 	tt._track._auto_update = args.auto_update
 	
 	tt._track._var = args.var -- a table
@@ -71,7 +72,11 @@ _meta.TextTable.__methods['draw'] = function(tt)
 	end
 	
 	tt:redraw()
-	tt._track._auto_update = tt._track._auto_update and GUI.register_update_object(tt)
+	tt._track._auto_update = tt._track._auto_update == true and GUI.register_update_object(tt)
+end
+
+_meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
+	tt._track._table[row][column].style = style
 end
 
 _meta.TextTable.__methods['align_column'] = function(tt, column, align) -- set the alignment for every cell in a column number
@@ -89,6 +94,7 @@ _meta.TextTable.__methods['refresh_style'] = function(tt)
 end
 
 _meta.TextTable.__methods['refresh_values'] = function(tt) -- update the values in every cell
+
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		for colindex, colkey in ipairs(tt._track._columns) do
 			local value = tt._track._var[rowkey][colkey]
@@ -147,7 +153,46 @@ _meta.TextTable.__methods['recalculate_cell_sizes'] = function(tt) -- recalculat
 	-- the sizes and positions of all cells are now calculated
 end
 
+_meta.TextTable.__methods['resize'] = function(tt)
+	if tt._track._height ~= #tt._track._var then -- if the number of rows we're set to display no longer matches the number of rows we have
+		self = tostring(tt)	
+		local newheight = #tt._track._var
+		for rowindex, rowkey in ipairs(tt._track._rows) do
+			if rowindex > newheight then -- delete items outside the new range
+				for colindex, colkey in ipairs(tt._track._columns) do
+					windower.text.delete('%s %d %d':format(self, rowindex, colindex))
+					tt._track._table[rowindex][colindex] = nil
+				end
+			elseif not tt._track._table[rowindex][1] then -- we need to create new cells
+				for colindex, colkey in ipairs(tt._track._columns) do
+					tt._track._table[rowindex][colindex] = {}			-- initialize the cell.  We probably want to do something with it
+					tt._track._table[rowindex][colindex].style = {	-- font stuff for this cell.  There's per-cell formatting
+						font = tt._track._font,
+						font_size = tt._track._font_size,
+						color = tt._track._color,
+						bold = tt._track._bold,
+						stroke = tt._track._stroke,
+						stroke_width = tt._track._stroke_width,
+						stroke_color = tt._track._stroke_color,
+						align = 'left'
+					}
+					tt._track._table[rowindex][colindex].extents = {w=0,h=0}
+					
+					local textname = '%s %d %d':format(self, rowindex, colindex) -- name of text object
+					windower.text.create(textname) -- Create the text object
+					GUI.styletext(textname, tt._track._table[rowindex][colindex].style)
+					windower.text.set_visibility(textname, true)
+				end
+			end
+		end
+	
+		tt._track._height = #tt._track._var
+		tt._track._rows = GUI.range(1, tt._track._height)
+	end
+end
+
 _meta.TextTable.__methods['redraw'] = function(tt)
+	tt:resize()
 	tt:refresh_values()
 	--tt:refresh_style()
 	
@@ -157,6 +202,7 @@ end
 _meta.TextTable.__methods['update'] = _meta.TextTable.__methods['redraw']
 
 _meta.TextTable.__methods['postrender'] = function(tt)
+	--print('debug postrender')
 	tt:recalculate_cell_sizes()
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		for colindex, colkey in ipairs(tt._track._columns) do
