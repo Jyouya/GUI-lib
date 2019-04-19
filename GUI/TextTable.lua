@@ -79,6 +79,18 @@ _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
 	tt._track._table[row][column].style = style
 end
 
+_meta.TextTable.__methods['style_row'] = function(tt, row, style)
+	for colindex, colkey in ipairs(tt._track._columns) do
+		tt._track._table[row][colindex].style = style
+	end
+end
+
+_meta.TextTable.__methods['style_column'] = function(tt, col, style)
+	for rowindex, rowkey in ipairs(tt._track._rows) do
+		tt._track._table[rowindex][col].style = style
+	end
+end
+
 _meta.TextTable.__methods['align_column'] = function(tt, column, align) -- set the alignment for every cell in a column number
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		tt._track._table[rowindex][column].style.align = align
