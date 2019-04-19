@@ -77,17 +77,26 @@ end
 
 _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
 	tt._track._table[row][column].style = style
+	if tt._track._auto_update then
+		GUI.styletext('%s %d %d':format(tostring(tt), row, column), style)
+	end
 end
 
 _meta.TextTable.__methods['style_row'] = function(tt, row, style)
 	for colindex, colkey in ipairs(tt._track._columns) do
 		tt._track._table[row][colindex].style = style
+		if tt._track._auto_update then
+			GUI.styletext('%s %d %d':format(tostring(tt), row, colindex), style)
+		end
 	end
 end
 
 _meta.TextTable.__methods['style_column'] = function(tt, col, style)
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		tt._track._table[rowindex][col].style = style
+		if tt._track._auto_update then
+			GUI.styletext('%s %d %d':format(tostring(tt), rowindex, col), style)
+		end
 	end
 end
 
