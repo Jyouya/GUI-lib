@@ -256,6 +256,14 @@ _meta.TextTable.__methods['postrender'] = function(tt)
 	tt._track._framecounter = tt._track._framecounter + 1
 end
 
+_meta.TextTable.__methods['undraw'] = function(tt)
+	for rowindex, rowkey in ipairs(tt._track._rows) do
+		for colindex, colkey in ipairs(row) do
+			windower.text.delete('%s %d %d':format(tostring(tt), rowindex, colindex))
+		end
+	end
+end
+
 function GUI.styletext(textname, style)
 	windower.text.set_font(textname, style.font)
 	windower.text.set_font_size(textname, style.font_size)
