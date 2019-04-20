@@ -65,7 +65,7 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 	-- Initialize and draw the IconPalette
 	ib._track._iconPalette = IconPalette{
 		x		= ib._track._x - 54,
-		y		= palette_y_align(ib._track._y, #ib._track._icons),
+		y		= GUI.palette_y_align(ib._track._y, #ib._track._icons),
 		var		= ib._track._var,
 		icons	= ib._track._icons,
 		button	= ib
@@ -193,7 +193,22 @@ _meta.IconButton.__methods['update'] = function(ib)
 	end
 end
 
-function palette_y_align(y, size)
+_meta.IconButton.__methods['undraw'] = function(ib)
+	local self = tostring(ib)
+	windower.prim.delete(self)
+	windower.prim.delete('%s press':format(self))
+	for ind, icon in ipairs(ib._track._icons) do
+		windower.prim.delete('%s %s':format(self, icon.value))
+	end
+	if ib._track._overlay then
+		windower.prim.delete('%s overlay':format(self))
+	end
+	ib._track._iconPalette:undraw()
+	GUI.unregister_mouse_listener(ib._track._mouse_event)
+	GUI.unregister_update_object(ib._track._update_event)	
+end
+
+function GUI.palette_y_align(y, size)
 	y_size = 40 * size + 2
 	if y - y_size/2 + 21 < GUI.bound.y.lower then
 		return GUI.bound.y.lower
