@@ -185,6 +185,9 @@ _meta.TextTable.__methods['resize'] = function(tt)
 		local newheight = #tt._track._var
 		for rowindex, rowkey in ipairs(tt._track._rows) do
 			if rowindex > newheight then -- delete items outside the new range
+				if not tt._track._table[rowindex] then
+					tt._track._table[rowindex] = {}
+				end
 				for colindex, colkey in ipairs(tt._track._columns) do
 					windower.text.delete('%s %d %d':format(self, rowindex, colindex))
 					tt._track._table[rowindex][colindex] = nil
