@@ -22,7 +22,7 @@ function PassiveText(args, ...) -- constructs the object, but does not initializ
 	pt._track._bold = args.bold or false
 	
 	pt._track._align = args.align:lower() or 'left'
-	
+
 	return setmetatable(pt, _meta.PassiveText)	
 end
 
@@ -46,7 +46,7 @@ _meta.PassiveText.__methods['draw'] = function(pt) -- Finishes initialization an
 	--print(windower.text.get_extents(self))
 	--print(windower.text.get_location(self))
 	
-	GUI.register_update_object(pt)
+	pt._track._event = GUI.register_update_object(pt)
 end
 
 _meta.PassiveText.__methods['update'] = function(pt)
@@ -62,6 +62,12 @@ end
 _meta.PassiveText.__methods['restroke'] = function(pt, alpha, red, green, blue)
 	pt._track._stroke_color = {alpha, red, green, blue}
 	windower.text.set_stroke_color(tostring(pt), alpha, red, green, blue)
+end
+
+_meta.PassiveText.__methods['undraw'] = function(pt)
+	windower.text.create(tostring(pt))
+
+	GUI.unregister_update_object(pt._track._event)
 end
 
 _meta.PassiveText.__index = function(pt, k)

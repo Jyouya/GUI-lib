@@ -220,6 +220,21 @@ _meta.PopupSlider.__methods['update'] = function(ps)
 	windower.prim.set_position('%s handle':format(tostring(ps)), ps._track._x + 15, ps._track._y + 7 + ps._track._handle) -- y + distance to top of track + handle position
 end
 
+_meta.PopupSlider.__methods['undraw'] = function(ps)
+	local self = tostring(ps)
+
+	for i, pos in ipairs{'top','mid','bot'} do
+		windower.prim.delete('%s %s':format(self,pos))
+		windower.prim.delete('%s track %s':format(self, pos))
+	end
+
+	windower.prim.delete('%s handle':format(self))
+	windower.text.delete('%s header':format(self))
+	windower.text.delete('%s footer':format(self))
+
+	GUI.unregister_mouse_listener(ps._track._event)
+end
+
 _meta.PopupSlider.__index = function(sb, k)
     if type(k) == 'string' then
         local lk = k:lower()

@@ -118,12 +118,22 @@ _meta.FunctionButton.__methods['hideoverlay'] = function(fb)
 	fb._track._show_overlay = false
 end]]
 
-_meta.IconButton.__methods['disable'] = function(ib)
+_meta.FunctionButton.__methods['disable'] = function(ib)
 	fb._track._disabled = true
 end
 
-_meta.IconButton.__methods['enable'] = function(ib)
+_meta.FunctionButton.__methods['enable'] = function(ib)
 	fb._track._disabled = false
+end
+
+_meta.FunctionButton.__methods['undraw'] = function(ib)
+	local self = tostring(fb)
+
+	windower.prim.delete(self)
+	windower.prim.delete('%s press':format(self))
+	windower.prim.delete('%s Icon':format(self))
+
+	GUI.unregister_mouse_listener(fb._track._mouse_event)
 end
 
 _meta.FunctionButton.__index = function(fb, k)

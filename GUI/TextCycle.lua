@@ -214,6 +214,22 @@ _meta.TextCycle.__methods['on_mouse'] = function(tc, clicktype, x, y, delta, blo
 	end
 end
 
+_meta.TextCycle.__methods['undraw'] = function(tc)
+	local self = tostring(tc)
+	
+	windower.prim.delete('%s left':format(self))
+	windower.prim.delete('%s right':format(self))
+	
+	windower.text.delete('%s desc':format(self))
+	
+	for i, v in ipairs(tc._track._var) do
+		windower.text.delete('%s %i':format(self, i))
+	end
+	
+	GUI.unregister_update_object(tc._track._update_id)
+	GUI.unregister_mouse_listener(tc._track._mouse_id)
+end
+
 _meta.TextCycle.__index = function(tc, k)
     if type(k) == 'string' then
 		

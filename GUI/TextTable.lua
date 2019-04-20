@@ -111,6 +111,12 @@ _meta.TextTable.__methods['style_column'] = function(tt, col, style)
 end
 
 _meta.TextTable.__methods['align_column'] = function(tt, column, align) -- set the alignment for every cell in a column number
+	if tt._track._col_style[column] then
+		local newstyle = GUI.layerstyle(tt._track._col_style[column], {align=align})
+	else
+		local newstyle = GUI.layerstyle(tt._track._default_style, {align=align})
+	end
+	tt._track._col_style[column] = newstyle
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		tt._track._table[rowindex][column].style.align = align
 	end			
@@ -204,13 +210,13 @@ _meta.TextTable.__methods['resize'] = function(tt)
 				end
 			elseif not tt._track._table[rowindex][1] then -- we need to create new cells
 				for colindex, colkey in ipairs(tt._track._columns) do
-					tt._track._table[rowindex][colindex] = {}			-- initialize the cell.  We probably want to do something with it
-					local cellstyle = tt._track._default_style
-					if #tt._track._col_style > 0 then
-						cellstyle = GUI.layerstyle(cellstyle, tt._track._col_style)
+					tt._track._table[rowindex][colindex] = {}	-- initialize the cell.
+					cellstyle = tt._track._default_style
+					if tt._track._col_style[colindex] then
+						cellstyle = GUI.layerstyle(cellstyle, tt._track._col_style[colindex])
 					end
-					if #tt._track._row_style > 0 then
-						cellstyle = GUI.layerstyle(cellstyle, tt._track._rows_style)
+					if tt._track._row_style[rowindex] then
+						cellstyle = GUI.layerstyle(cellstyle, tt._track._rows_style[rowindex])
 					end
 
 					tt._track._table[rowindex][colindex].style = cellstyle
@@ -285,7 +291,7 @@ end
 function GUI.layerstyle(bottom, top)
 	local n = {}
 	for i, v in ipairs({'font', 'font_size', 'color', 'bold', 'stroke', 'stroke_width', 'stroke_color', 'align'}) do
-		n = top[v] or bottom[v]
+		n[v] = top[v] or bottom[v]
 	end
 	return n
 end

@@ -215,6 +215,27 @@ _meta.SliderButton.__methods['update'] = function(sb)
 	end
 end
 
+_meta.SliderButton.__methods['undraw'] = function(sb)
+	self = tostring(sb)
+	windower.prim.delete(self)
+	windower.prim.delete('% press':format(self))
+	
+	if sb._track._icon then
+		windower.prim.delete('%s icon':format(self))
+	end
+	
+	if sb._track._overlay then
+		windower.prim.delete('%s overlay':format(self))
+	end
+	
+	windower.text.delete('%s text':format(self))
+
+	sb._track._popupSlider:undraw()
+	
+	GUI.unregister_mouse_listener(sb._track._mouse_event)
+	GUI.unregister_update_object(sb._track._update_event)
+end
+
 function slider_y_align(y, size)
 	y_size = size
 	if y - y_size/2 + 21 < GUI.bound.y.lower then

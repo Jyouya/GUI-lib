@@ -138,6 +138,19 @@ _meta.ToggleButton.__methods['unpress'] = function(tb)
 	end
 end
 
+_meta.ToggleButton.__methods['undraw'] = function(tb)
+	local self = tostring(tb)
+
+	windower.prim.delete(self)
+	windower.prim.delete('%s press':format(self))
+	
+	windower.prim.delete('%s Up':format(self))
+	windower.prim.delete('%s Down':format(self, icon))
+	
+	GUI.unregister_mouse_listener(tb._track._mouse_event)
+	GUI.unregister_update_object(tb._track._update_event)
+end
+
 _meta.ToggleButton.__index = function(tb, k)
     if type(k) == 'string' then
         local lk = k:lower()
