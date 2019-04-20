@@ -262,6 +262,10 @@ _meta.TextTable.__methods['undraw'] = function(tt)
 			windower.text.delete('%s %d %d':format(tostring(tt), rowindex, colindex))
 		end
 	end
+	if tt._track._auto_update then
+		GUI.unregister_update_object(tt._track._auto_update)
+	end
+	GUI.unsubscribe_postrender(tt)
 end
 
 function GUI.styletext(textname, style)
