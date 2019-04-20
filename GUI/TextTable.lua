@@ -183,7 +183,8 @@ _meta.TextTable.__methods['resize'] = function(tt)
 	if tt._track._height ~= #tt._track._var then -- if the number of rows we're set to display no longer matches the number of rows we have
 		self = tostring(tt)	
 		local newheight = #tt._track._var
-		for rowindex, rowkey in ipairs(tt._track._rows) do
+		local rowrange = math.max(newheight, tt._track._height)
+		for rowindex, rowkey in ipairs(GUI.range(1, rowrange)) do
 			if rowindex > newheight then -- delete items outside the new range
 				if not tt._track._table[rowindex] then
 					tt._track._table[rowindex] = {}
