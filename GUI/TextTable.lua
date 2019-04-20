@@ -30,6 +30,17 @@ function TextTable(args)
 	tt._track._pad_x = args.pad_x or 3
 	tt._track._pad_y = args.pad_y or 3
 	
+	tt._track._default_style = {
+		font = tt._track._font,
+		font_size = tt._track._font_size,
+		color = tt._track._color,
+		bold = tt._track._bold,
+		stroke = tt._track._stroke,
+		stroke_width = tt._track._stroke_width,
+		stroke_color = tt._track._stroke_color,
+		align = 'left'
+	}
+	
 	tt._track._col_size_override = args.col_size_override -- table with key being column number and value being forced width
 	tt._track._row_size_override = args.row_size_override
 	
@@ -38,6 +49,9 @@ function TextTable(args)
 	tt._track._row_heights = {}
 	tt._track._col_x = {}
 	tt._track._row_y = {}
+	
+	tt._track._col_style = {}
+	tt._track._row_style = {}
 	
 	tt._track._framecounter = 0
 	
@@ -51,16 +65,7 @@ _meta.TextTable.__methods['draw'] = function(tt)
 		for colindex, colkey in ipairs(tt._track._columns) do
 			-- var[rowkey][colkey] accesses the data to display in the cell
 			tt._track._table[rowindex][colindex] = {}			-- initialize the cell.  We probably want to do something with it
-			tt._track._table[rowindex][colindex].style = {	-- font stuff for this cell.  There's per-cell formatting
-				font = tt._track._font,
-				font_size = tt._track._font_size,
-				color = tt._track._color,
-				bold = tt._track._bold,
-				stroke = tt._track._stroke,
-				stroke_width = tt._track._stroke_width,
-				stroke_color = tt._track._stroke_color,
-				align = 'left'
-			}
+			tt._track._table[rowindex][colindex].style = tt._track._default_style	-- font stuff for this cell.  There's per-cell formatting	
 			tt._track._table[rowindex][colindex].extents = {w=0,h=0}
 			
 			local textname = '%s %d %d':format(self, rowindex, colindex) -- name of text object
@@ -84,7 +89,7 @@ _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
 end
 
 _meta.TextTable.__methods['style_row'] = function(tt, row, style)
-	
+	tt._track._row_style[row] = style
 	for colindex, colkey in ipairs(tt._track._columns) do
 		local newstyle = GUI.layerstyle(tt._track._table[row][colindex].style, style)
 		tt._track._table[row][colindex].style = newstyle
@@ -95,6 +100,7 @@ _meta.TextTable.__methods['style_row'] = function(tt, row, style)
 end
 
 _meta.TextTable.__methods['style_column'] = function(tt, col, style)
+	tt._track._col_style[col] = style
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		local newstyle = GUI.layerstyle(tt._track._table[rowindex][col].style, style)
 		tt._track._table[rowindex][col].style = newstyle
@@ -199,16 +205,15 @@ _meta.TextTable.__methods['resize'] = function(tt)
 			elseif not tt._track._table[rowindex][1] then -- we need to create new cells
 				for colindex, colkey in ipairs(tt._track._columns) do
 					tt._track._table[rowindex][colindex] = {}			-- initialize the cell.  We probably want to do something with it
-					tt._track._table[rowindex][colindex].style = {	-- font stuff for this cell.  There's per-cell formatting
-						font = tt._track._font,
-						font_size = tt._track._font_size,
-						color = tt._track._color,
-						bold = tt._track._bold,
-						stroke = tt._track._stroke,
-						stroke_width = tt._track._stroke_width,
-						stroke_color = tt._track._stroke_color,
-						align = 'left'
-					}
+					local cellstyle = tt._track._default_style
+					if #tt._track._col_style > 0 then
+						cellstyle = GUI.layerstyle(cellstyle, tt._track._col_style)
+					end
+					if #tt._track._row_style > 0 then
+						cellstyle = GUI.layerstyle(cellstyle, tt._track._rows_style)
+					end
+
+					tt._track._table[rowindex][colindex].style = cellstyle
 					tt._track._table[rowindex][colindex].extents = {w=0,h=0}
 					
 					local textname = '%s %d %d':format(self, rowindex, colindex) -- name of text object
