@@ -130,6 +130,18 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 	end
 end
 
+_meta.IconPalette.__methods['undraw'] = function(ip)
+	local self = tostring(ip)
+	windower.prim.delete('%s top':format(self))
+	windower.prim.delete('%s mid':format(self))
+	windower.prim.delete('%s bot':format(self))
+	for ind, icon in ipairs(ip._track._icons) do
+		windower.prim.delete('%s %s':format(self,ind))
+	end
+	
+	GUI.unregister_mouse_listener(ip._track._event)
+end
+
 _meta.IconPalette.__index = function(ip, k)
     if type(k) == 'string' then
         local lk = k:lower()

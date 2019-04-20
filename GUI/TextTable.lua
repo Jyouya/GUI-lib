@@ -65,7 +65,7 @@ _meta.TextTable.__methods['draw'] = function(tt)
 		for colindex, colkey in ipairs(tt._track._columns) do
 			-- var[rowkey][colkey] accesses the data to display in the cell
 			tt._track._table[rowindex][colindex] = {}			-- initialize the cell.  We probably want to do something with it
-			tt._track._table[rowindex][colindex].style = tt._track._default_style	-- font stuff for this cell.  There's per-cell formatting	
+			tt._track._table[rowindex][colindex].style = table.copy(tt._track._default_style, false)	-- font stuff for this cell.  There's per-cell formatting	
 			tt._track._table[rowindex][colindex].extents = {w=0,h=0}
 			
 			local textname = '%s %d %d':format(self, rowindex, colindex) -- name of text object
@@ -258,7 +258,7 @@ end
 
 _meta.TextTable.__methods['undraw'] = function(tt)
 	for rowindex, rowkey in ipairs(tt._track._rows) do
-		for colindex, colkey in ipairs(row) do
+		for colindex, colkey in ipairs(tt._track._columns) do
 			windower.text.delete('%s %d %d':format(tostring(tt), rowindex, colindex))
 		end
 	end
