@@ -100,7 +100,8 @@ _meta.TextTable.__methods['style_row'] = function(tt, row, style)
 end
 
 _meta.TextTable.__methods['style_column'] = function(tt, col, style)
-	tt._track._col_style[col] = style
+	--tt._track._col_style[col] = style -- 
+	tt._track._col_style[col] = GUI.layerstyle(tt._track._col_style[col] or style, style)
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		local newstyle = GUI.layerstyle(tt._track._table[rowindex][col].style, style)
 		tt._track._table[rowindex][col].style = newstyle
@@ -111,15 +112,7 @@ _meta.TextTable.__methods['style_column'] = function(tt, col, style)
 end
 
 _meta.TextTable.__methods['align_column'] = function(tt, column, align) -- set the alignment for every cell in a column number
-	if tt._track._col_style[column] then
-		local newstyle = GUI.layerstyle(tt._track._col_style[column], {align=align})
-	else
-		local newstyle = GUI.layerstyle(tt._track._default_style, {align=align})
-	end
-	tt._track._col_style[column] = newstyle
-	for rowindex, rowkey in ipairs(tt._track._rows) do
-		tt._track._table[rowindex][column].style.align = align
-	end			
+	tt:style_column(column, {align=align})
 end
 
 _meta.TextTable.__methods['refresh_style'] = function(tt)

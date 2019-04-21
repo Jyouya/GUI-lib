@@ -111,7 +111,7 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 			windower.text.set_visibility('%s %i':format(self, i), i == tc._track._var._track._current)
 		end
 		
-	else	-- second part of draw, has to be execuded at least one fram after TextCycle:draw() 
+	else	-- second part of draw, has to be executed at least one frame after TextCycle:draw() 
 		
 		local desc = '%s desc':format(self)
 		local left = '%s left':format(self)
