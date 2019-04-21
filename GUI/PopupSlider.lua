@@ -30,7 +30,7 @@ function PopupSlider(args) -- constructs the object, but does not initialize it
 	ps._track._mouse_event = nil
 	ps._track._update_event = nil
 	
-	ps._track._suppress = false
+	--ps._track._suppress = false
 	ps._track._update_command = args.command -- string or function
 
 	return setmetatable(ps, _meta.PopupSlider)	
@@ -118,7 +118,7 @@ _meta.PopupSlider.__methods['draw'] = function(ps)
 	windower.text.set_bold(name, false)
 	
 	--ps._track._event = GUI.register_mouse_listener(ps)
-	GUI.register_mouse_listener(ps)
+	--GUI.register_mouse_listener(ps)
 end
 
 _meta.PopupSlider.__methods['calc_handle'] = function(ps) -- returns the slider position associated with var's current value
@@ -161,7 +161,7 @@ end
 _meta.PopupSlider.__methods['hide'] = function(ps)
 	local self = tostring(ps)
 	ps._track._shown = false
-	ps._track._button._track._suppress = true
+	--ps._track._button._track._suppress = true
 	for i, pos in ipairs{'top','mid','bot'} do
 		windower.prim.set_visibility('%s %s':format(self, pos), false)
 		windower.prim.set_visibility('%s track %s':format(self, pos), false)
@@ -234,7 +234,7 @@ _meta.PopupSlider.__methods['undraw'] = function(ps)
 	windower.text.delete('%s footer':format(self))
 
 	--GUI.unregister_mouse_listener(ps._track._event)
-	GUI.unregister_mouse_listener(ps)
+	--GUI.unregister_mouse_listener(ps)
 end
 
 _meta.PopupSlider.__index = function(sb, k)

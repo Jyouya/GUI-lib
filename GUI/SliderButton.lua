@@ -99,12 +99,15 @@ _meta.SliderButton.__methods['draw'] = function(sb) -- Finishes initialization a
 end
 
 _meta.SliderButton.__methods['on_mouse'] = function(sb, type, x, y, delta, blocked)
+	if sb._track._popupSlider:on_mouse(type, x, y, delta, blocked) then
+		return true
+	end
 	if sb._track._disabled then return end
 	if type == 1 then
-		if sb._track._suppress then
+		--[[if sb._track._suppress then
 			sb._track._suppress = false
 			return true
-		end
+		end]]
 		if x > sb._track._x and x < sb._track._x + 42 and y > sb._track._y and y < sb._track._y + 42 then
 			if sb._track._overlay and sb._track._overlay.hide_on_click and sb._track._show_overlay then
 				sb:hideoverlay()
