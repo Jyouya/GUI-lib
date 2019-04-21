@@ -46,7 +46,8 @@ _meta.PassiveText.__methods['draw'] = function(pt) -- Finishes initialization an
 	--print(windower.text.get_extents(self))
 	--print(windower.text.get_location(self))
 	
-	pt._track._event = GUI.register_update_object(pt)
+	--pt._track._event = GUI.register_update_object(pt)
+	GUI.register_update_object(pt)
 end
 
 _meta.PassiveText.__methods['update'] = function(pt)
@@ -67,7 +68,8 @@ end
 _meta.PassiveText.__methods['undraw'] = function(pt)
 	windower.text.delete(tostring(pt))
 
-	GUI.unregister_update_object(pt._track._event)
+	--GUI.unregister_update_object(pt._track._event)
+	GUI.unregister_update_object(pt)
 end
 
 _meta.PassiveText.__index = function(pt, k)

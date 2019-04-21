@@ -64,8 +64,10 @@ _meta.ToggleButton.__methods['draw'] = function(tb) -- Finishes initialization a
 	
 	-- display the icon that is currently active
 	--windower.prim.set_visibility('%s %s':format(self, ('Down' and tb._track._startPressed) or 'Up'), tb._track._var ~= tb._track._invert)
-	tb._track._mouse_event = GUI.register_mouse_listener(tb)
-	tb._track._update_event = GUI.register_update_object(tb)
+	--tb._track._mouse_event = GUI.register_mouse_listener(tb)
+	--tb._track._update_event = GUI.register_update_object(tb)
+	GUI.register_mouse_listener(tb)
+	GUI.register_update_object(tb)
 end
 
 _meta.ToggleButton.__methods['on_mouse'] = function(tb, type, x, y, delta, blocked)
@@ -147,8 +149,10 @@ _meta.ToggleButton.__methods['undraw'] = function(tb)
 	windower.prim.delete('%s Up':format(self))
 	windower.prim.delete('%s Down':format(self, icon))
 	
-	GUI.unregister_mouse_listener(tb._track._mouse_event)
-	GUI.unregister_update_object(tb._track._update_event)
+	--GUI.unregister_mouse_listener(tb._track._mouse_event)
+	--GUI.unregister_update_object(tb._track._update_event)
+	GUI.unregister_mouse_listener(tb)
+	GUI.unregister_update_object(tb)
 end
 
 _meta.ToggleButton.__index = function(tb, k)

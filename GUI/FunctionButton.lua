@@ -49,7 +49,8 @@ _meta.FunctionButton.__methods['draw'] = function(fb) -- Finishes initialization
 	
 	-- display the icon that is currently active
 	--windower.prim.set_visibility('%s %s':format(self, ('Down' and fb._track._startPressed) or 'Up'), fb._track._var ~= fb._track._invert)
-	fb._track._mouse_event = GUI.register_mouse_listener(fb)
+	--fb._track._mouse_event = GUI.register_mouse_listener(fb)
+	GUI.register_mouse_listener(fb)
 end
 
 _meta.FunctionButton.__methods['on_mouse'] = function(fb, t, x, y, delta, blocked)
@@ -133,7 +134,8 @@ _meta.FunctionButton.__methods['undraw'] = function(fb)
 	windower.prim.delete('%s press':format(self))
 	windower.prim.delete('%s Icon':format(self))
 
-	GUI.unregister_mouse_listener(fb._track._mouse_event)
+	--GUI.unregister_mouse_listener(fb._track._mouse_event)
+	GUI.unregister_mouse_listener(fb)
 end
 
 _meta.FunctionButton.__index = function(fb, k)

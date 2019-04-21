@@ -77,7 +77,10 @@ _meta.TextTable.__methods['draw'] = function(tt)
 	end
 	
 	tt:redraw()
-	tt._track._auto_update = tt._track._auto_update == true and GUI.register_update_object(tt)
+	--tt._track._auto_update = tt._track._auto_update == true and GUI.register_update_object(tt)
+	if tt._track._auto_update then
+		GUI.register_update_object(tt)
+	end
 end
 
 _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
@@ -89,7 +92,7 @@ _meta.TextTable.__methods['style_cell'] = function(tt, column, row, style)
 end
 
 _meta.TextTable.__methods['style_row'] = function(tt, row, style)
-	tt._track._row_style[row] = style
+	tt._track._row_style[row] = GUI.layerstyle(tt._track._row_style[row] or style, style)  --style
 	for colindex, colkey in ipairs(tt._track._columns) do
 		local newstyle = GUI.layerstyle(tt._track._table[row][colindex].style, style)
 		tt._track._table[row][colindex].style = newstyle
@@ -130,7 +133,7 @@ _meta.TextTable.__methods['refresh_values'] = function(tt) -- update the values 
 			local value = tt._track._var[rowkey][colkey]
 			tt._track._table[rowindex][colindex].value = value
 			-- value is either a static thing to be displayed, or a function that returns the thing to be displayed
-			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value({row=rowindex, col=colindex}) or value or '')
+			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value({row=rowindex, col=colindex, column=colindex}) or value or '')
 		end
 	end
 end
@@ -209,7 +212,7 @@ _meta.TextTable.__methods['resize'] = function(tt)
 						cellstyle = GUI.layerstyle(cellstyle, tt._track._col_style[colindex])
 					end
 					if tt._track._row_style[rowindex] then
-						cellstyle = GUI.layerstyle(cellstyle, tt._track._rows_style[rowindex])
+						cellstyle = GUI.layerstyle(cellstyle, tt._track._row_style[rowindex])
 					end
 
 					tt._track._table[rowindex][colindex].style = cellstyle
@@ -262,7 +265,8 @@ _meta.TextTable.__methods['undraw'] = function(tt)
 		end
 	end
 	if tt._track._auto_update then
-		GUI.unregister_update_object(tt._track._auto_update)
+		--GUI.unregister_update_object(tt._track._auto_update)
+		GUI.unregister_update_object(tt)
 	end
 	GUI.unsubscribe_postrender(tt)
 end

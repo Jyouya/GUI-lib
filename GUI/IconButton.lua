@@ -71,18 +71,22 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 		button	= ib
 		}
 	ib._track._iconPalette:draw()
-	ib._track._mouse_event = GUI.register_mouse_listener(ib)
-	ib._track._update_event = GUI.register_update_object(ib)
-	
+	--ib._track._mouse_event = GUI.register_mouse_listener(ib)
+	--ib._track._update_event = GUI.register_update_object(ib)
+	GUI.register_mouse_listener(ib)
+	GUI.register_update_object(ib)
 end
 
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
+	if ib._track._iconPalette:on_mouse(type, x, y, delta, blocked) then
+		return true
+	end
 	if ib._track._disabled then return end
 	if type == 1 then
-		if ib._track._suppress then
+		--[[if ib._track._suppress then
 			ib._track._suppress = false
 			return true
-		end
+		--end]]
 		if x > ib._track._x and x < ib._track._x + 42 and y > ib._track._y and y < ib._track._y + 42 then
 			if ib._track._overlay and ib._track._overlay.hide_on_click and ib._track._show_overlay then
 				ib:hideoverlay()
@@ -103,6 +107,8 @@ _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked
 			return true
 		end
 	end
+	
+	--return blocked
 end
 
 _meta.IconButton.__methods['hide'] = function(ib)
@@ -204,8 +210,8 @@ _meta.IconButton.__methods['undraw'] = function(ib)
 		windower.prim.delete('%s overlay':format(self))
 	end
 	ib._track._iconPalette:undraw()
-	GUI.unregister_mouse_listener(ib._track._mouse_event)
-	GUI.unregister_update_object(ib._track._update_event)	
+	GUI.unregister_mouse_listener(ib)--._track._mouse_event)
+	GUI.unregister_update_object(ib)--._track._update_event)	
 end
 
 function GUI.palette_y_align(y, size)

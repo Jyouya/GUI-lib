@@ -117,7 +117,8 @@ _meta.PopupSlider.__methods['draw'] = function(ps)
 	--windower.text.set_stroke_width(name, 0)
 	windower.text.set_bold(name, false)
 	
-	ps._track._event = GUI.register_mouse_listener(ps)
+	--ps._track._event = GUI.register_mouse_listener(ps)
+	GUI.register_mouse_listener(ps)
 end
 
 _meta.PopupSlider.__methods['calc_handle'] = function(ps) -- returns the slider position associated with var's current value
@@ -232,7 +233,8 @@ _meta.PopupSlider.__methods['undraw'] = function(ps)
 	windower.text.delete('%s header':format(self))
 	windower.text.delete('%s footer':format(self))
 
-	GUI.unregister_mouse_listener(ps._track._event)
+	--GUI.unregister_mouse_listener(ps._track._event)
+	GUI.unregister_mouse_listener(ps)
 end
 
 _meta.PopupSlider.__index = function(sb, k)

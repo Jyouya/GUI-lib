@@ -60,7 +60,8 @@ _meta.IconPalette.__methods['draw'] = function(ip)
 		windower.prim.set_position(name, ip._track._x + 5, ip._track._y + 5 + (ind - 1) * 40)
 	end
 	
-	ip._track._event = GUI.register_mouse_listener(ip)
+	--ip._track._event = GUI.register_mouse_listener(ip)
+	--GUI.register_mouse_listener(ip)
 end
 
 _meta.IconPalette.__methods['show'] = function(ip)
@@ -79,7 +80,7 @@ end
 _meta.IconPalette.__methods['hide'] = function(ip)
 	local self = tostring(ip)
 	ip._track._shown = false
-	ip._track._button._track._suppress = true
+	--ip._track._button._track._suppress = true
 	
 	for i, pos in ipairs{'top','mid','bot'} do
 		windower.prim.set_visibility('%s %s':format(self,pos), false)	
@@ -139,7 +140,8 @@ _meta.IconPalette.__methods['undraw'] = function(ip)
 		windower.prim.delete('%s %s':format(self,ind))
 	end
 	
-	GUI.unregister_mouse_listener(ip._track._event)
+	--GUI.unregister_mouse_listener(ip._track._event)
+	--GUI.unregister_mouse_listener(ip)
 end
 
 _meta.IconPalette.__index = function(ip, k)

@@ -71,7 +71,8 @@ _meta.TextCycle.__methods['draw'] = function(tc) -- Finishes initialization and 
 		windower.text.set_text(name, v)
 	end
 	
-	tc._track._update_id = GUI.register_update_object(tc)
+	--tc._track._update_id = GUI.register_update_object(tc)
+	GUI.register_update_object(tc)
 	
 end
 
@@ -170,7 +171,8 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 			}
 			windower.prim.set_position(right, tc._track._rightarrow.x, tc._track._rightarrow.y)		
 		end
-		tc._track._mouse_id = GUI.register_mouse_listener(tc)
+		--tc._track._mouse_id = GUI.register_mouse_listener(tc)
+		GUI.register_mouse_listener(tc)
 		tc._track._drawn = true
 		
 		if tc._track._start_hidden then
@@ -226,8 +228,10 @@ _meta.TextCycle.__methods['undraw'] = function(tc)
 		windower.text.delete('%s %i':format(self, i))
 	end
 	
-	GUI.unregister_update_object(tc._track._update_id)
-	GUI.unregister_mouse_listener(tc._track._mouse_id)
+	--GUI.unregister_update_object(tc._track._update_id)
+	--GUI.unregister_mouse_listener(tc._track._mouse_id)
+	GUI.unregister_update_object(tc)
+	GUI.unregister_mouse_listener(tc)
 end
 
 _meta.TextCycle.__index = function(tc, k)

@@ -28,7 +28,7 @@ require('GUI/TextTable')
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false
 	--for i, listener in ipairs(GUI.mouse_listeners) do
-	for i, listener in pairs({table.unpack(GUI.mouse_listeners)}) do
+	for i, listener in pairs(GUI.mouse_listeners) do
 		block = listener:on_mouse(type, x, y, delta, blocked) or block
 	end
 	blocked = block
@@ -36,13 +36,16 @@ function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse 
 end
 
 function GUI.register_mouse_listener(obj) -- will technically overflow eventually.  I'm not really worried about that.
-	GUI.mouse_listeners[GUI.mouse_index] = obj
+	--[[GUI.mouse_listeners[GUI.mouse_index] = obj
 	GUI.mouse_index = GUI.mouse_index + 1
-	return GUI.mouse_index - 1
+	return GUI.mouse_index - 1]]
+	GUI.mouse_listeners[tostring(obj)] = obj
+
 end
 
-function GUI.unregister_mouse_listener(index)
-	GUI.mouse_listeners[index] = nil
+function GUI.unregister_mouse_listener(obj)
+	--GUI.mouse_listeners[index] = nil
+	GUI.mouse_listeners[tostring(obj)] = nil
 end
 
 function GUI.on_prerender()
@@ -50,34 +53,36 @@ function GUI.on_prerender()
 	if GUI.nexttime + GUI.delay <= curtime then
 		GUI.nexttime = curtime
 		GUI.delay = 1
-		for i, object in pairs({table.unpack(GUI.update_objects)}) do
+		for i, object in pairs(GUI.update_objects) do
 			object:update()
 		end
 	end
 end
 
 function GUI.on_postrender()
-	for obj, _ in pairs(GUI.postrender_objects) do
+	for _, obj in pairs(GUI.postrender_objects) do
 		obj:postrender()
 	end
 end
 
 function GUI.subscribe_postrender(obj)
-	GUI.postrender_objects[obj] = obj
+	GUI.postrender_objects[tostring(obj)] = obj
 end
 
 function GUI.unsubscribe_postrender(obj)
-	GUI.postrender_objects[obj] = nil
+	GUI.postrender_objects[tostring(obj)] = nil
 end
 
 function GUI.register_update_object(obj)
-	GUI.update_objects[GUI.update_index] = obj
+	--[[GUI.update_objects[GUI.update_index] = obj
 	GUI.update_index = GUI.update_index + 1
-	return GUI.update_index - 1
+	return GUI.update_index - 1]]
+	GUI.update_objects[tostring(obj)] = obj
 end
 
-function GUI.unregister_update_object(index)
-	GUI.update_objects[index] = nil
+function GUI.unregister_update_object(obj)--index)
+	--GUI.update_objects[index] = nil
+	GUI.update_objects[tostring(obj)] = nil
 end
 
 function GUI.complete_filepath(short)

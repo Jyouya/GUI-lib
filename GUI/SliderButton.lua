@@ -91,8 +91,10 @@ _meta.SliderButton.__methods['draw'] = function(sb) -- Finishes initialization a
 		}
 	sb._track._popupSlider:draw()
 	
-	sb._track._mouse_event = GUI.register_mouse_listener(sb)
-	sb._track._update_event = GUI.register_update_object(sb)
+	--sb._track._mouse_event = GUI.register_mouse_listener(sb)
+	--sb._track._update_event = GUI.register_update_object(sb)
+	GUI.register_mouse_listener(sb)
+	GUI.register_update_object(sb)
 	
 end
 
@@ -232,8 +234,10 @@ _meta.SliderButton.__methods['undraw'] = function(sb)
 
 	sb._track._popupSlider:undraw()
 	
-	GUI.unregister_mouse_listener(sb._track._mouse_event)
-	GUI.unregister_update_object(sb._track._update_event)
+	--GUI.unregister_mouse_listener(sb._track._mouse_event)
+	--GUI.unregister_update_object(sb._track._update_event)
+	GUI.unregister_mouse_listener(sb)
+	GUI.unregister_update_object(sb)
 end
 
 function slider_y_align(y, size)
