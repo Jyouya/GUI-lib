@@ -65,7 +65,7 @@ _meta.PassiveText.__methods['restroke'] = function(pt, alpha, red, green, blue)
 end
 
 _meta.PassiveText.__methods['undraw'] = function(pt)
-	windower.text.create(tostring(pt))
+	windower.text.delete(tostring(pt))
 
 	GUI.unregister_update_object(pt._track._event)
 end

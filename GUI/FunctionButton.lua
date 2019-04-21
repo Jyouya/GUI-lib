@@ -118,15 +118,15 @@ _meta.FunctionButton.__methods['hideoverlay'] = function(fb)
 	fb._track._show_overlay = false
 end]]
 
-_meta.FunctionButton.__methods['disable'] = function(ib)
+_meta.FunctionButton.__methods['disable'] = function(fb)
 	fb._track._disabled = true
 end
 
-_meta.FunctionButton.__methods['enable'] = function(ib)
+_meta.FunctionButton.__methods['enable'] = function(fb)
 	fb._track._disabled = false
 end
 
-_meta.FunctionButton.__methods['undraw'] = function(ib)
+_meta.FunctionButton.__methods['undraw'] = function(fb)
 	local self = tostring(fb)
 
 	windower.prim.delete(self)
