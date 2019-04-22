@@ -131,9 +131,11 @@ _meta.TextTable.__methods['refresh_values'] = function(tt) -- update the values 
 	for rowindex, rowkey in ipairs(tt._track._rows) do
 		for colindex, colkey in ipairs(tt._track._columns) do
 			local value = tt._track._var[rowkey][colkey]
-			tt._track._table[rowindex][colindex].value = value
 			-- value is either a static thing to be displayed, or a function that returns the thing to be displayed
-			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), type(value) == 'function' and value({row=rowindex, col=colindex, column=colindex}) or value or '')
+			value = type(value) == 'function' and value({row=rowindex, col=colindex, column=colindex}) or value or ''
+			-- Now value is the string that will be displayed
+			tt._track._table[rowindex][colindex].value = value
+			windower.text.set_text('%s %d %d':format(tostring(tt), rowindex, colindex), value)
 		end
 	end
 end
