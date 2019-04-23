@@ -94,11 +94,12 @@ end
 
 _meta.ToggleButton.__methods['update'] = function (tb)
 	if ((type(tb._track._var)=='table' and tb._track._var.value) or (type(tb._track._var)=='string' and _G[tb._track._var])) ~= tb._track._state then
+		local value = (type(tb._track._var)=='table' and tb._track._var.value) or (type(tb._track._var)=='string' and _G[tb._track._var])
 		self = tostring(tb)
-		windower.prim.set_visibility('%s Up':format(self), not (_G[tb._track._var] ~= tb._track._invert))
-		windower.prim.set_visibility('%s Down':format(self), _G[tb._track._var] ~= tb._track._invert)
-		windower.prim.set_visibility('%s press':format(self), _G[tb._track._var] ~= tb._track._invert)
-		tb._track._state = (type(tb._track._var)=='table' and tb._track._var.value) or (type(tb._track._var)=='string' and _G[tb._track._var])
+		windower.prim.set_visibility('%s Up':format(self), not (value ~= tb._track._invert))
+		windower.prim.set_visibility('%s Down':format(self), value ~= tb._track._invert)
+		windower.prim.set_visibility('%s press':format(self), value ~= tb._track._invert)
+		tb._track._state = value
 		tb._track._pressed = not tb._track._pressed
 	end
 end
