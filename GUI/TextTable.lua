@@ -114,6 +114,46 @@ _meta.TextTable.__methods['style_column'] = function(tt, col, style)
 	end
 end
 
+_meta.TextTable.__methods['style_all'] = function(tt, style)
+	-- merge any column specific styles
+	for colindex, colkey in ipairs(tt._track._columns) do
+		if tt._track._col_style[colindex] then
+			for k, v in pairs(tt._track._col_style[colindex].style) do
+				if style[k] then -- if the new style needs to overwrite this
+					tt._track._col_style[colindex].style[k] = style[k]
+				end
+			end
+			-- if the column style is completely overwritten by the new style, get rid of it
+			if T(tt._track._col_style[colindex].style):equals(style) then
+				tt._track._col_style[colindex] = nil
+			end
+		end
+	end
+	-- do the same for rows as we did columns
+	for rowindex, rowkey in ipairs(tt._track._rows) do
+		if tt._track._row_style[rowindex] then
+			for k, v in pairs(tt._track._row_style[rowindex].style) do
+				if style[k] then
+					tt._track._row_style[rowindex].style[k] = style[k]
+				end
+			end
+			if T(tt._track._row_style[rowindex].style):equals(style) then
+				tt._track._row_style[rowindex] = nil
+			end
+		end
+	end
+	-- Now we actually change the cells styles
+	for rowindex, rowkey in ipairs(tt._track._rows) do
+		for colindex, colkey in ipairs(tt._track._columns) do
+			local newstyle = GUI.layerstyle(tt._track._table[rowindex][columnindex].style, style)
+			tt._track._table[rowindex][columnindex].style = newstyle
+			if tt._track._auto_update then
+				GUI.styletext('%s %d %d':format(tostring(tt), row, column), newstyle)
+			end
+		end
+	end	
+end
+
 _meta.TextTable.__methods['align_column'] = function(tt, column, align) -- set the alignment for every cell in a column number
 	tt:style_column(column, {align=align})
 end
