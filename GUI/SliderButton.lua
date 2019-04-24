@@ -216,6 +216,12 @@ _meta.SliderButton.__methods['update'] = function(sb)
 		--end]]
 		sb._track._state = _G[sb._track._var]
 		windower.text.set_text('%s text':format(tostring(sb)), _G[sb._track._var])
+		
+		if type(sb._track._update_command) == 'string' then
+			windower.send_command(sb._track._update_command)
+		elseif type(sb._track._update_command) == 'function' then
+			sb._track._update_command()
+		end
 		--sb._track._popupSlider:update()
 	end
 end
