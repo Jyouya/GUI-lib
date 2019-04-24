@@ -87,6 +87,7 @@ end
 
 function GUI.complete_filepath(short)
 	for i, path in ipairs{
+		short,
 		windower.addon_path..short,
 		windower.addon_path..'graphics/'..short,
 		windower.addon_path..'data/graphics/'..short,
