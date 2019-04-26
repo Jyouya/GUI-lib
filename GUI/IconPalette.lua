@@ -64,6 +64,44 @@ _meta.IconPalette.__methods['draw'] = function(ip)
 	--GUI.register_mouse_listener(ip)
 end
 
+_meta.IconPalette.__methods['new_icons'] = function(ip, icons, var)
+	local self = tostring(ip)
+	ip._track._var = var or ip._track._var
+	for ind, icon in ipairs(ip._track._icons) do
+		name = '%s %s':format(self,ind)
+		windower.prim.delete(name)
+	end
+	
+	ip._track._icons = icons
+	
+	for i, pos in ipairs{'top','mid','bot'} do
+		name = '%s %s':format(self,pos)
+		windower.prim.set_visibility(name, false)
+		--windower.prim.set_texture(name, GUI.complete_filepath('icon_palette_%s.png':format(pos)))	
+		--windower.prim.set_fit_to_texture(name, true)
+	end	
+	
+	windower.prim.set_position('%s top':format(self), ip._track._x, ip._track._y)		-- position the top and middle segments
+	windower.prim.set_position('%s mid':format(self), ip._track._x, ip._track._y + 3)
+	
+	local icon_count = #ip._track._icons
+	
+	windower.prim.set_repeat('%s mid':format(self), 1, 10 * icon_count - 1) 	-- expand middle segment
+	windower.prim.set_fit_to_texture('%s mid':format(self), false)
+	windower.prim.set_size('%s mid':format(self), 42, 40 * icon_count - 4)	
+	
+	windower.prim.set_position('%s bot':format(self), ip._track._x, ip._track._y - 1 + 40 * icon_count) -- position bottom segment
+	
+	for ind, icon in ipairs(ip._track._icons) do
+		name = '%s %s':format(self,ind)
+		windower.prim.create(name)
+		windower.prim.set_visibility(name, false)
+		windower.prim.set_texture(name, GUI.complete_filepath(icon.img)) -- looks in data/graphics for icon.img
+		windower.prim.set_fit_to_texture(name, true)
+		windower.prim.set_position(name, ip._track._x + 5, ip._track._y + 5 + (ind - 1) * 40)
+	end
+end
+
 _meta.IconPalette.__methods['show'] = function(ip)
 	local self = tostring(ip)
 	ip._track._shown = true
@@ -109,6 +147,7 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 				for ind, icon in ipairs(ip._track._icons) do
 					if y > ip._track._y + 5 + 40 * (ind - 1) and y < ip._track._y + 37 + 40 * (ind - 1) then
 						ip._track._var:set(icon.value)	-- var is a mode from Modes.lua
+						--print('select %s':format(icon.value))
 						ip._track._button:select()
 						ip._track._button:unpress()
 						--ip:hide()

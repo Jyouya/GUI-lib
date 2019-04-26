@@ -77,6 +77,34 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 	GUI.register_update_object(ib)
 end
 
+_meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
+	local self = tostring(ib)
+	ib._track._var = var or ib._track._var
+	ib._track._iconPalette._track._y = GUI.palette_y_align(ib._track._y, #icons)
+	-- delete the old icons
+	for ind, icon in ipairs(ib._track._icons) do
+		local name = '%s %s':format(self, icon.value)
+		windower.prim.delete(name)
+	end	
+	-- give the new icons to the palette
+	ib._track._iconPalette:new_icons(icons, var)
+	ib._track._icons = icons
+	-- draw the new icons
+	for ind, icon in ipairs(ib._track._icons) do
+		local name = '%s %s':format(self, icon.value)
+		windower.prim.create(name)
+		windower.prim.set_visibility(name, false)
+		windower.prim.set_position(name, ib._track._x + 5, ib._track._y + 5)
+		windower.prim.set_texture(name, GUI.complete_filepath(icon.img))
+		windower.prim.set_fit_to_texture(name, true)
+	end
+	-- display the icon that is currently active
+	if not ib._track._icons:with('value', ib._track._var.value) then
+		ib._track._var:set(ib._track._icons[1].value)
+	end
+	windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
+end
+
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
 	if ib._track._iconPalette:on_mouse(type, x, y, delta, blocked) then
 		return true
