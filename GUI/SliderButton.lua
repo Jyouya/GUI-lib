@@ -26,6 +26,7 @@ function SliderButton(args) -- constructs the object, but does not initialize it
 	sb._track._disabled = args.disabled or false
 	sb._track._overlay = args.overlay --{img=filepath, hide_on_click = true}
 	sb._track._show_overlay = false
+	sb._track._direction = args.direction or 'west'
 	--sb._track._on_click = args.on_click
 	return setmetatable(sb, _meta.SliderButton)	
 end
@@ -78,10 +79,24 @@ _meta.SliderButton.__methods['draw'] = function(sb) -- Finishes initialization a
 	windower.text.set_stroke_color(text, 255, 0, 0, 0)
 	windower.text.set_stroke_width(text, 1)
 	
-	-- Initialize and draw the IconPalette
+	-- Initialize and draw the PopupSlider
+	local direction = sb._track._direction
+	local palette_x = {
+		west=sb._track._x - 54,
+		east=sb._track._x + 54,
+		north=sb._track._x,
+		south=sb._track._x
+	}
+	local palette_y = {
+		west=slider_y_align(sb._track._y, sb._track._height),
+		east=slider_y_align(sb._track._y, sb._track._height),
+		north=sb._track._y - sb._track._height - 12, -- y - height - 12 for padding
+		south=sb._track._y + 54
+	}
+	
 	sb._track._popupSlider = PopupSlider{
-		x		= sb._track._x - 54,
-		y		= slider_y_align(sb._track._y, sb._track._height),
+		x		= palette_x[direction], --sb._track._x - 54,
+		y		= palette_y[direction], --slider_y_align(sb._track._y, sb._track._height),
 		var		= sb._track._var,
 		height 	= sb._track._height,
 		button	= sb,
