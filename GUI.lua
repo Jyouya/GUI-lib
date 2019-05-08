@@ -13,6 +13,7 @@ GUI.nexttime = os.clock()
 GUI.delay = 1
 
 --require('coroutine')
+require('tables')
 
 require('GUI/IconPalette')
 require('GUI/IconButton')

@@ -22,6 +22,8 @@ function IconButton(args) -- constructs the object, but does not initialize it
 	ib._track._overlay = args.overlay --{img=filepath, hide_on_click = true}
 	ib._track._show_overlay = false
 	ib._track._on_click = args.on_click
+	ib._track._direction = args.direction or 'west'
+	
 	return setmetatable(ib, _meta.IconButton)	
 end
 
@@ -63,9 +65,23 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 	end
 	
 	-- Initialize and draw the IconPalette
+	local direction = ib._track._direction
+	local palette_x = {
+		west=ib._track._x - 54,
+		east=ib._track._x + 54,
+		north=ib._track._x,
+		south=ib._track._x
+	}
+	local palette_y = {
+		west=GUI.palette_y_align(ib._track._y, #ib._track._icons),
+		east=GUI.palette_y_align(ib._track._y, #ib._track._icons),
+		north=ib._track._y - 40 * #ib._track._icons - 14, -- y - height - 12 for padding
+		south=ib._track._y + 54
+	}
+	
 	ib._track._iconPalette = IconPalette{
-		x		= ib._track._x - 54,
-		y		= GUI.palette_y_align(ib._track._y, #ib._track._icons),
+		x		= palette_x[direction],--ib._track._x - 54,
+		y		= palette_y[direction],--GUI.palette_y_align(ib._track._y, #ib._track._icons),
 		var		= ib._track._var,
 		icons	= ib._track._icons,
 		button	= ib
