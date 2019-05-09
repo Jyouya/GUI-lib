@@ -14,7 +14,7 @@ function PassiveText(args, ...) -- constructs the object, but does not initializ
 	--pt._track._text = {...}
 	
 	pt._track._text = args.text
-	pt._track._var = {...}
+	pt._track._var = T{...}
 	pt._track._font = args.font or 'Helvetica'
 	pt._track._font_size = args.font_size or 10
 	pt._track._color = args.color or {255,253,252,250}
@@ -40,7 +40,8 @@ _meta.PassiveText.__methods['draw'] = function(pt) -- Finishes initialization an
 	windower.text.set_location(self, pt._track._x, pt._track._y)
 	windower.text.set_right_justified(self, pt._track._align == 'right')
 	--windower.text.set_text(self, 'RH Weaponskill: %s':format(_G[pt._track._var] or 'None'))--pt._track._var or 'None')
-	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end)))
+	windower.text.set_text(tostring(pt), (pt._track._text or '%s'):format(pt._track._var:map(function(x) 
+		if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end):unpack()))--table.foreach(pt._track._var, function(_,x) if type(x) == 'string' then return _G[x] or 'None' elseif type(x) == 'function' then return x() or 'None' end end)))
 	windower.text.set_visibility(self, true)
 	
 	--print(windower.text.get_extents(self))
