@@ -201,6 +201,7 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 			end
 		elseif ip._track._hover then
 			ip._track._hover = nil
+			ip._track._tt_shown = false
 			windower.text.set_visibility('%s tooltip':format(tostring(ip)), false)
 		end
 	end
