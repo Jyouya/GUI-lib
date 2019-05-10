@@ -17,6 +17,7 @@ function IconPalette(args)
 	ip._track._shown = false
 	ip._track._event = nil
 	ip._track._click = false
+	ip._track._tt_shown = false -- true when tooltip is displayed
 	--ip._track._block_click = false
 	
     return setmetatable(ip, _meta.IconPalette)
@@ -59,6 +60,16 @@ _meta.IconPalette.__methods['draw'] = function(ip)
 		windower.prim.set_fit_to_texture(name, true)
 		windower.prim.set_position(name, ip._track._x + 5, ip._track._y + 5 + (ind - 1) * 40)
 	end
+	
+	local tooltip = '%s tooltip':format(self)
+	windower.text.create(tooltip)
+	
+	windower.text.set_font(tooltip, 'Helvetica')
+	windower.text.set_stroke_color(tooltip, 127, 18, 97, 136)
+	windower.text.set_stroke_width(tooltip, 1)
+	windower.text.set_color(tooltip, 255, 253, 252, 250)
+	windower.text.set_font_size(tooltip, 10)
+	windower.text.set_visibility(tooltip, false)
 	
 	--ip._track._event = GUI.register_mouse_listener(ip)
 	--GUI.register_mouse_listener(ip)
@@ -127,6 +138,8 @@ _meta.IconPalette.__methods['hide'] = function(ip)
 	for ind, icon in ipairs(ip._track._icons) do
 		windower.prim.set_visibility('%s %s':format(self,ind), false)
 	end
+	
+	windower.text.set_visibility('%s tooltip':format(self), false)
 	--GUI.unregister_mouse_listener(ip._track._event)
 end
 
@@ -166,7 +179,30 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 			ip._track._click = true
 			blocked = true
 			return true
-		end			
+		end
+	else -- 
+		if x > ip._track._x and x < ip._track._x + 42 and y > ip._track._y and y < ip._track._y + 2 + 40 * #ip._track._icons then -- click is inside our window
+			if not ip._track._hover then
+				ip._track._hover = os.clock() + 1
+			end
+			if os.clock() > ip._track._hover then -- if we've hovered long enough to show a tooltip
+				if x > ip._track._x + 5 and x < ip._track._x + 37 then -- within x bounds for icons
+					for ind, icon in ipairs(ip._track._icons) do
+						if y > ip._track._y + 5 + 40 * (ind - 1) and y < ip._track._y + 37 + 40 * (ind - 1) then
+							if icon.tooltip and ip._track._tt_shown ~= ind then
+								windower.text.set_location('%s tooltip':format(tostring(ip)), x, y)
+								windower.text.set_text('%s tooltip':format(tostring(ip)), icon.tooltip)
+								windower.text.set_visibility('%s tooltip':format(tostring(ip)), true)
+								ip._track._tt_shown = ind
+							end
+						end
+					end
+				end
+			end
+		elseif ip._track._hover then
+			ip._track._hover = nil
+			windower.text.set_visibility('%s tooltip':format(tostring(ip)), false)
+		end
 	end
 end
 
