@@ -220,12 +220,12 @@ _meta.IconButton.__methods['select'] = function(ib)
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
 			end
 		end
+		ib._track._state = ib._track._var.value
 		if type(ib._track._update_command) == 'string' then
 			windower.send_command(ib._track._update_command)
 		elseif type(ib._track._update_command) == 'function' then
 			ib._track._update_command()
 		end
-		ib._track._state = ib._track._var.value
 	end
 end
 
