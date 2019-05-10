@@ -180,7 +180,7 @@ _meta.IconPalette.__methods['on_mouse'] = function(ip, type, x, y, delta, blocke
 			blocked = true
 			return true
 		end
-	else -- 
+	else -- tooltip stuff
 		if x > ip._track._x and x < ip._track._x + 42 and y > ip._track._y and y < ip._track._y + 2 + 40 * #ip._track._icons then -- click is inside our window
 			if not ip._track._hover then
 				ip._track._hover = os.clock() + 1
