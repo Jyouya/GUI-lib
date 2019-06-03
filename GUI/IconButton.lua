@@ -96,7 +96,24 @@ end
 _meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
 	local self = tostring(ib)
 	ib._track._var = var or ib._track._var
-	ib._track._iconPalette._track._y = GUI.palette_y_align(ib._track._y, #icons)
+	
+	-- Move the palette if necessary
+	local direction = ib._track._direction
+	local palette_x = {
+		west=ib._track._x - 54,
+		east=ib._track._x + 54,
+		north=ib._track._x,
+		south=ib._track._x
+	}
+	local palette_y = {
+		west=GUI.palette_y_align(ib._track._y, #icons),
+		east=GUI.palette_y_align(ib._track._y, #icons),
+		north=ib._track._y - 40 * #icons - 14,
+		south=ib._track._y + 54
+	}
+	ib._track._iconPalette._track._x = palette_x[direction]
+	ib._track._iconPalette._track._y = palette_y[direction]
+	
 	-- delete the old icons
 	for ind, icon in ipairs(ib._track._icons) do
 		local name = '%s %s':format(self, icon.value)
@@ -115,10 +132,12 @@ _meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
 		windower.prim.set_fit_to_texture(name, true)
 	end
 	-- display the icon that is currently active
-	if not ib._track._icons:with('value', ib._track._var.value) then
+	--[[if not table.with(ib._track._icons, 'value', ib._track._var.value) then
 		ib._track._var:set(ib._track._icons[1].value)
+	end]]
+	if table.with(ib._track._icons, 'value', ib._track._var.value) then
+		windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
 	end
-	windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
 end
 
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
@@ -266,6 +285,17 @@ function GUI.palette_y_align(y, size)
 		return GUI.bound.y.upper - y_size
 	else
 		return y - y_size/2 + 21
+	end
+end
+
+function GUI.palette_x_align(x, size) -- Will be used when horizontal palettes are implemented
+	x_size = 40 * size + 2
+	if x - x_size/2 + 21 < GUI.bound.x.lower then
+		return GUI.bound.y.lower
+	elseif x + x_size/2 + 21 > GUI.bound.x.upper then
+		return GUI.bound.x.upper - y_size
+	else
+		return x - x_size/2 + 21
 	end
 end
 

@@ -5,7 +5,9 @@ GUI.postrender_objects = {}
 GUI.mouse_index = 1
 GUI.update_index = 1
 GUI.bound = {}
-GUI.bound.x = nil
+GUI.bound.x = {}
+GUI.bound.x.lower = 70
+GUI.bound.x.upper = 1920 - 54
 GUI.bound.y = {}
 GUI.bound.y.lower = 80
 GUI.bound.y.upper = 500
@@ -25,6 +27,8 @@ require('GUI/SliderButton')
 require('GUI/FunctionButton')
 require('GUI/Divider')
 require('GUI/TextTable')
+require('GUI/IconGrid')
+require('GUI/GridButton')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false

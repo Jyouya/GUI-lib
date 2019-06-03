@@ -215,7 +215,7 @@ _meta.IconPalette.__methods['undraw'] = function(ip)
 	for ind, icon in ipairs(ip._track._icons) do
 		windower.prim.delete('%s %s':format(self,ind))
 	end
-	
+	windower.text.delete('%s tooltip':format(self))
 	--GUI.unregister_mouse_listener(ip._track._event)
 	--GUI.unregister_mouse_listener(ip)
 end
