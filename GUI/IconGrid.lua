@@ -105,12 +105,8 @@ _meta.IconGrid.__methods['new_icons'] = function(ig, icons, var)
 	local old_cols = ig._track._cols
 	ig._track._icons = icons
 	
-	-- Left off here
-	
 	ig._track._cols = #icons
 	ig._track._rows = T(icons):map(function(x) return #x end):max()
-	local dif = oldcols - ig._track._cols
-	ig._track._x = ig._track._x + dif * 40
 	
 	-- Hide the box
 	for y, ypos in ipairs{'top', 'mid', 'bot'} do
@@ -123,20 +119,31 @@ _meta.IconGrid.__methods['new_icons'] = function(ig, icons, var)
 	-- Change the box size
 	-- TODO need to windower.prim.set_size some of these too
 	windower.prim.set_position('%s top left':format(self), ig._track._x, ig._track._y)
+	
 	windower.prim.set_position('%s top mid':format(self), ig._track._x + 3, ig._track._y)
 	windower.prim.set_repeat('%s top mid':format(self), ig._track._cols * 40 - 4, 1)
+	windower.prim.set_size('%s top mid':format(self), ig._track._cols * 40 - 4, 3)
+	
 	windower.prim.set_position('%s top right':format(self), ig._track._x + 4 + ig._track._cols * 40 - 4, ig._track._y)
 	
 	windower.prim.set_position('%s mid left':format(self), ig._track._x, ig._track._y + 3)
 	windower.prim.set_repeat('%s mid left':format(self), 1, ig._track._rows * 40 - 4)
+	windower.prim.set_size('%s mid left':format(self), 3, ig._track._rows * 40 - 4)
+	
 	windower.prim.set_position('%s mid mid':format(self), ig._track._x + 3, ig._track._y +3)
 	windower.prim.set_repeat('%s mid mid':format(self), ig._track._cols * 10 - 1, ig._track._rows * 10 - 1)
+	windower.prim.set_size('%s mid mid':format(self), ig._track._cols * 40 - 4, ig._track._rows * 40 - 4)
+	
 	windower.prim.set_position('%s mid right':format(self), ig._track._x + 3 + ig._track._cols * 40 - 4, it._track._y +3)
 	windower.prim.set_repeat('%s mid right':format(self), 1, ig._track._rows * 40 - 4)
+	windower.prim.set_size('%s mid right':format(self), 3, ig._track._rows * 40 - 4)
 	
 	windower.prim.set_position('%s bot left':format(self), ig._track._x, ig._track._y + 3 + ig._track._rows * 40 - 4)
+	
 	windower.prim.set_position('%s bot mid':format(self), ig._track._x + 3, ig._track._y + 3 + ig._track._rows * 40 - 4)
 	windower.prim.set_repeat('%s bot mid':format(self), ig._track._cols * 40 - 4, 1)
+	windower.prim.set_size('%s bot mid':format(self), ig._track._cols * 40 - 4, 3)
+	
 	windower.prim.set_position('%s bot right':format(self), ig._track._x + 3 + ig._track._cols * 40 - 4, ig._track._y + 3 + ig._track._rows * 40 - 4)
 	
 	for i, col in ipairs(ig._track._icons) do
