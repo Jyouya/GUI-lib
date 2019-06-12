@@ -2,6 +2,7 @@ GUI = {}
 GUI.mouse_listeners = {}
 GUI.update_objects = {}
 GUI.postrender_objects = {}
+GUI.signal_listeners = {}
 GUI.mouse_index = 1
 GUI.update_index = 1
 GUI.bound = {}
@@ -29,6 +30,9 @@ require('GUI/Divider')
 require('GUI/TextTable')
 require('GUI/IconGrid')
 require('GUI/GridButton')
+require('GUI/Combobox')
+require('GUI/ComboSelector')
+require('GUI/ScrollBar')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false
@@ -88,6 +92,23 @@ end
 function GUI.unregister_update_object(obj)--index)
 	--GUI.update_objects[index] = nil
 	GUI.update_objects[tostring(obj)] = nil
+end
+
+-- function will be called, and passed the signal name and signaler
+function GUI.subscribe_signals(obj, func)
+	GUI.signal_listeners[tostring(obj)] = func
+end
+
+function GUI.unsubscribe_signals(obj)
+	GUI.signal_objects[tostring(obj)] = nil
+end
+
+function GUI.send_signal(sender, signal)
+	for obj, func in pairs(GUI.signal_listeners) do
+		if tostring(obj) ~= tostring(sender) then
+			func(sender, signal)
+		end
+	end
 end
 
 function GUI.complete_filepath(short)
