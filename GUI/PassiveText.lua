@@ -21,7 +21,7 @@ function PassiveText(args, ...) -- constructs the object, but does not initializ
 	pt._track._stroke_color = args.stroke_color or {127, 18, 97, 136}
 	pt._track._bold = args.bold or false
 	
-	pt._track._align = args.align:lower() or 'left'
+	pt._track._align = (args.align or 'left'):lower()
 
 	return setmetatable(pt, _meta.PassiveText)	
 end
