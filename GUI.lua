@@ -33,6 +33,7 @@ require('GUI/GridButton')
 require('GUI/Combobox')
 require('GUI/ComboSelector')
 require('GUI/ScrollBar')
+require('GUI/RadioButton')
 
 function GUI.on_mouse_event(type, x, y, delta, blocked) -- sends incoming mouse events to any elements currently listening
 	block = false
@@ -103,10 +104,10 @@ function GUI.unsubscribe_signals(obj)
 	GUI.signal_objects[tostring(obj)] = nil
 end
 
-function GUI.send_signal(sender, signal)
+function GUI.send_signal(sender, signal, ...)
 	for obj, func in pairs(GUI.signal_listeners) do
 		if tostring(obj) ~= tostring(sender) then
-			func(sender, signal)
+			func(sender, signal, ...)
 		end
 	end
 end

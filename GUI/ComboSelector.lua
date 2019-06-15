@@ -36,8 +36,8 @@ _meta.ComboSelector.__methods['draw'] = function(cs)
 		windower.text.create(name)
 		windower.text.set_font(name, 'Helvetica')
 		windower.text.set_color(name, 255,253, 252, 250)
-		windower.text.set_stroke_color(name, 150, 89, 84, 114)
-		windower.text.set_stroke_width(name, 2)
+		windower.text.set_stroke_color(name, 170, 89, 84, 114)
+		windower.text.set_stroke_width(name, 4)
 		windower.text.set_location(name, cs._track._x + 2, cs._track._y + 17 * (i - 1))
 		windower.text.set_font_size(name, 10)
 		windower.text.set_visibility(name, false)
@@ -98,6 +98,54 @@ _meta.ComboSelector.__methods['hide'] = function(cs)
 		cs._track._scrollbar:hide()
 	end
 	cs._track._shown = false
+end
+
+_meta.ComboSelector.__methods['resize'] = function(cs, newsize)
+	local self = tostring(cs)
+	-- expand menu
+	if newsize > cs._track._size then
+		for i = cs._track._size + 1, newsize do
+			local name = '%s %s text':format(self, i)
+			windower.text.create(name)
+			windower.text.set_font(name, 'Helvetica')
+			windower.text.set_color(name, 255,253, 252, 250)
+			windower.text.set_stroke_color(name, 170, 89, 84, 114)
+			windower.text.set_stroke_width(name, 4)
+			windower.text.set_location(name, cs._track._x + 2, cs._track._y + 17 * (i - 1))
+			windower.text.set_font_size(name, 10)
+			windower.text.set_visibility(name, false)
+			local name = '%s background %s':format(self, i)
+			windower.prim.create(name)
+			windower.prim.set_position(name, cs._track._x, cs._track._y + 17 * (i - 1))
+			windower.prim.set_size(name, cs._track._width - (cs._track._scroll and 11 or 0), 17)
+			windower.prim.set_visibility(name, false)
+		end
+	elseif newsize < cs._track._size then
+		for i = cs._track._size, newsize + 1, -1 do
+			windower.text.delete('%s %s text':format(self, i))
+			windower.prim.delete('%s background %s':format(self, i))
+		end
+	end
+	
+	cs._track._size = newsize
+	if (cs._track._size < #cs._track._options) ~= (cs._track._scroll or false) then
+		cs._track._scroll = ((cs._track._size < #cs._track._options) ~= (cs._track._scroll or false))
+		for i = 1, cs._track._size do
+			windower.prim.set_size('%s background %s':format(self, i), cs._track._width - (cs._track._scroll and 11 or 0), 17)
+		end
+		if cs._track._scroll then
+			cs._track._scrollbar = ScrollBar{
+				x=cs._track._x + cs._track._width - (cs._track._scroll and 11 or 0),
+				y=cs._track._y,
+				height=newsize * 17, -- multiply by height of each entry
+				displaypercent=newsize / #cs._track._options,
+				callback=cs.scroll:apply(cs),
+				interval= 1 / (#cs._track._options - newsize ) -- 1 / number of distinct positions
+			}
+			cs._track._scrollbar:draw()
+		end
+	elseif cs._track._scroll then -- scrollbar already existed, adjust its size
+	end
 end
 
 _meta.ComboSelector.__methods['update_visible'] = function(cs)

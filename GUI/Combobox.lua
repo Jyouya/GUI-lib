@@ -14,6 +14,7 @@ function Combobox(args)
 	cb._track._var = args.var
 	cb._track._width = args.width
 	cb._track._size = args.size -- could calculate it using GUI.bounds if not provided
+	cb._track._callback = args.callback
 	cb._track._state = cb._track._var.value
 	cb._track._lock = T{}
 	
@@ -80,10 +81,23 @@ _meta.Combobox.__methods['hide'] = function(cb)
 	end
 end
 
+_meta.Combobox.__methods['resize'] = function(cb, newsize)
+	if cb._track._dropdown._track._shown then
+		cb._track._dropdown:hide()
+	end
+	cb._track._size = newsize
+	cb._track._dropdown:resize(newsize)
+end
+
 _meta.Combobox.__methods['update'] = function(cb)
+	print( cb._track._var.value, cb._track._state)
 	if cb._track._var.value ~= cb._track._state then
+		cb._track._state = cb._track._var.value
 		windower.text.set_text('%s text':format(tostring(cb)), cb._track._var.value)
 		cb._track._dropdown._track._selected = cb._track._var._track._current -- What a mess
+		if cb._track._callback then
+			cb._track._callback(cb._track._var.value)
+		end
 	end
 end
 
@@ -98,7 +112,7 @@ _meta.Combobox.__methods['on_mouse'] = function(cb, type, x, y, delta, blocked)
 		end
 		if type == 1 then
 			cb._track._dropdown:hide()
-			GUI.send_signal(cb, 'unlock')
+			GUI.send_signal(cb, 'lock', false)
 			if x >= 0 and x < cb._track._width and y >= 0 and y < 22 then
 				return true
 			end
@@ -111,7 +125,8 @@ _meta.Combobox.__methods['on_mouse'] = function(cb, type, x, y, delta, blocked)
 		if type == 1 then
 			cb._track._click = true
 			cb._track._dropdown:show()
-			GUI.send_signal(cb, 'lock') -- lock any widgets that are listening
+			GUI.send_signal(cb, 'lock', true) -- lock any widgets that are listening
+			-- Need to rework lock system and use focus system instead to block mouse events handled by focused widgets
 			return true
 		end
 	end
@@ -122,16 +137,23 @@ _meta.Combobox.__methods['on_mouse'] = function(cb, type, x, y, delta, blocked)
 end
 
 _meta.Combobox.__methods['select'] = function(cb, selection)
+	local change = cb._track._var ~= cb._track._state -- true if a new value is selected
 	cb._track._var:set(cb._track._var[selection])
+	cb._track._state = cb._track._var.value
 	windower.text.set_text('%s text':format(tostring(cb)), cb._track._var.value)
-	GUI.send_signal(cb, 'unlock')
+	if change and cb._track._callback then
+		cb._track._callback(cb._track._var.value)
+	end
+	GUI.send_signal(cb, 'lock', false)
 end
 
-_meta.Combobox.__methods['receive_signal'] = function(cb, sender, signal)
+_meta.Combobox.__methods['receive_signal'] = function(cb, sender, signal, ...)
 	if signal == 'lock' then
-		cb._track._lock[sender] = true
-	elseif signal == 'unlock' then
-		cb._track._lock[sender] = nil
+		if {...}[1] == true then
+			cb._track._lock[sender] = true
+		elseif {...}[1] == false then
+			cb._track._lock[sender] = nil
+		end
 	end
 end
 
