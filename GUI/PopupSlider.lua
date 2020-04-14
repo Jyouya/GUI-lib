@@ -125,7 +125,7 @@ _meta.PopupSlider.__methods['calc_handle'] = function(ps) -- returns the slider 
 	local h = ps._track._track_length
 	local vmin = ps._track._min
 	local vmax = ps._track._max
-	local value = _G[ps._track._var]
+	local value = (type(ps._track._var)=='table' and ps._track._var.value) or (type(ps._track._var)=='string' and _G[ps._track._var])
 	
 	return h - ((value - vmin)/(vmax - vmin))
 end
@@ -173,7 +173,7 @@ _meta.PopupSlider.__methods['hide'] = function(ps)
 	windower.prim.set_visibility('%s handle':format(self), false)
 end
 
-_meta.PopupSlider.__methods['on_mouse'] = function(ps, type, x, y, delta, blocked)
+_meta.PopupSlider.__methods['on_mouse'] = function(ps, ctype, x, y, delta, blocked)
 	if not (ps.shown or ps._track._click) then return end
 	if ps._track._drag and ps.shown then -- the mouse is currently dragging the handle
 		ps._track._handle = y - ps._track._y - 17 -- mouse_y - (top of box + distance to top of track)
@@ -183,16 +183,20 @@ _meta.PopupSlider.__methods['on_mouse'] = function(ps, type, x, y, delta, blocke
 			ps._track._handle = 0
 		end
 		windower.prim.set_position('%s handle':format(tostring(ps)), ps._track._x + 15, ps._track._y + 17 + ps._track._handle) -- y + distance to top of track + handle position
-		_G[ps._track._var] = ps:slider_value()
+		if type(ps._track._var) == 'string' then
+			_G[ps._track._var] = ps:slider_value()
+		elseif type(ps._track._var) == 'table' then
+			ps._track._var:set(ps:slider_value())
+		end
 		ps._track._button:update()
 		-- signal ps._track._button to update its value here
 	end
-	if type == 2 then
+	if ctype == 2 then
 		ps._track._click = false
 		ps._track._drag = false
 		blocked = true
 		return true
-	elseif type == 1 then -- left click down
+	elseif ctype == 1 then -- left click down
 		-- figure out of the click is in our window
 		-- if so, figure out what icon
 		-- set the variable to the value for that icon

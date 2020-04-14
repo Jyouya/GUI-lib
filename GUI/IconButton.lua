@@ -52,7 +52,7 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 		windower.prim.set_fit_to_texture(name, true)
 	end	
 	-- display the icon that is currently active
-	windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
+	windower.prim.set_visibility('%s %s':format(self, tostring(ib._track._var.value)), true)
 	
 	-- draw overlay
 	if ib._track._overlay then
@@ -132,11 +132,11 @@ _meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
 		windower.prim.set_fit_to_texture(name, true)
 	end
 	-- display the icon that is currently active
-	--[[if not table.with(ib._track._icons, 'value', ib._track._var.value) then
+	--[[if not table.with(ib._track._icons, 'value', tostring(ib._track._var.value)) then
 		ib._track._var:set(ib._track._icons[1].value)
 	end]]
-	if table.with(ib._track._icons, 'value', ib._track._var.value) then
-		windower.prim.set_visibility('%s %s':format(self, ib._track._var.value), true)
+	if table.with(ib._track._icons, 'value', tostring(ib._track._var.value)) then
+		windower.prim.set_visibility('%s %s':format(self, tostring(ib._track._var.value)), true)
 	end
 end
 
@@ -192,7 +192,7 @@ _meta.IconButton.__methods['show'] = function(ib)
 	windower.prim.set_visibility(tostring(ib), true)
 	ib._track._pressed = false -- unpress the button
 	for ind, icon in ipairs(ib._track._icons) do
-		windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), icon.value == ib._track._var.value)
+		windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), icon.value == tostring(ib._track._var.value))
 	end
 end
 
@@ -231,15 +231,15 @@ end
 
 _meta.IconButton.__methods['select'] = function(ib)
 	if ib._track._disabled then return end
-	if ib._track._var.value ~= ib._track._state then
+	if tostring(ib._track._var.value) ~= ib._track._state then
 		for ind, icon in ipairs(ib._track._icons) do
-			if icon.value == ib._track._var.value then
+			if icon.value == tostring(ib._track._var.value) then
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), true)
 			else
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
 			end
 		end
-		ib._track._state = ib._track._var.value
+		ib._track._state = tostring(ib._track._var.value)
 		if type(ib._track._update_command) == 'string' then
 			windower.send_command(ib._track._update_command)
 		elseif type(ib._track._update_command) == 'function' then
@@ -250,15 +250,15 @@ end
 
 _meta.IconButton.__methods['update'] = function(ib)
 	if ib._track._disabled then return end
-	if ib._track._var.value ~= ib._track._state then
+	if tostring(ib._track._var.value) ~= ib._track._state then
 		for ind, icon in ipairs(ib._track._icons) do
-			if icon.value == ib._track._var.value then
+			if icon.value == tostring(ib._track._var.value) then
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), true)
 			else
 				windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), false)
 			end
 		end
-		ib._track._state = ib._track._var.value
+		ib._track._state = tostring(ib._track._var.value)
 	end
 end
 

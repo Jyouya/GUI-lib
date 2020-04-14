@@ -15,7 +15,7 @@ GUI.bound.y.upper = 500
 GUI.nexttime = os.clock()
 GUI.delay = 1
 
---require('coroutine')
+local coroutine = require('coroutine')
 require('tables')
 
 require('GUI/IconPalette')
@@ -59,14 +59,18 @@ function GUI.unregister_mouse_listener(obj)
 end
 
 function GUI.on_prerender()
-	local curtime = os.clock()
-	if GUI.nexttime + GUI.delay <= curtime then
-		GUI.nexttime = curtime
-		GUI.delay = 1
-		for i, object in pairs(GUI.update_objects) do
-			object:update()
-		end
+	-- local curtime = os.clock()
+	-- if GUI.nexttime + GUI.delay <= curtime then
+	-- 	GUI.nexttime = curtime
+	-- 	GUI.delay = 1
+	-- 	for i, object in pairs(GUI.update_objects) do
+	-- 		object:update()
+	-- 	end
+	-- end
+	for i, object in pairs(GUI.update_objects) do
+		object:update()
 	end
+	coroutine.schedule(GUI.on_prerender, GUI.delay)
 end
 
 function GUI.on_postrender()
@@ -132,10 +136,12 @@ end
 
 if windower.raw_register_event then
 	windower.raw_register_event('mouse', GUI.on_mouse_event)
-	windower.raw_register_event('prerender', GUI.on_prerender)
+	-- windower.raw_register_event('prerender', GUI.on_prerender)
+	GUI.on_prerender()
 	windower.raw_register_event('postrender', GUI.on_postrender)
 else
 	windower.register_event('mouse', GUI.on_mouse_event)
-	windower.register_event('prerender', GUI.on_prerender)
+	-- windower.register_event('prerender', GUI.on_prerender)
+	GUI.on_prerender()
 	windower.register_event('postrender', GUI.on_postrender)
 end

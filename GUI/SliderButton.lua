@@ -72,7 +72,7 @@ _meta.SliderButton.__methods['draw'] = function(sb) -- Finishes initialization a
 	windower.text.set_font(text, 'Helvetica')
 	windower.text.set_font_size(text, 10)
 	windower.text.set_color(text, 255, 253, 252, 250)
-	windower.text.set_text(text, _G[sb._track._var])
+	windower.text.set_text(text, (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var]))
 	windower.text.set_visibility(text, true)
 	windower.text.set_location(text, sb._track._x + 5, sb._track._y + 6)
 	windower.text.set_bold(text, true)
@@ -204,7 +204,7 @@ _meta.SliderButton.__methods['select'] = function(sb)
 	if sb._track._disabled then return end
 	if _G[sb._track._var] ~= sb._track._state then
 		for ind, icon in ipairs(sb._track._icons) do
-			if icon.value == _G[sb._track._var] then
+			if icon.value == (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var]) then
 				windower.prim.set_visibility('%s %s':format(tostring(sb),icon.value), true)
 			else
 				windower.prim.set_visibility('%s %s':format(tostring(sb),icon.value), false)
@@ -215,13 +215,13 @@ _meta.SliderButton.__methods['select'] = function(sb)
 		elseif type(sb._track._update_command) == 'function' then
 			sb._track._update_command()
 		end
-		sb._track._state = _G[sb._track._var]
+		sb._track._state = (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var])
 	end
 end
 
 _meta.SliderButton.__methods['update'] = function(sb)
 	if sb._track._disabled then return end	
-	if _G[sb._track._var] ~= sb._track._state then
+	if (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var]) ~= sb._track._state then
 		--[[for ind, icon in ipairs(sb._track._icons) do
 			if icon.value == _G[sb._track._var] then
 				windower.prim.set_visibility('%s %s':format(tostring(sb),icon.value), true)
@@ -229,8 +229,8 @@ _meta.SliderButton.__methods['update'] = function(sb)
 				windower.prim.set_visibility('%s %s':format(tostring(sb),icon.value), false)
 			end
 		--end]]
-		sb._track._state = _G[sb._track._var]
-		windower.text.set_text('%s text':format(tostring(sb)), _G[sb._track._var])
+		sb._track._state = (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var])
+		windower.text.set_text('%s text':format(tostring(sb)), (type(sb._track._var)=='table' and sb._track._var.value) or (type(sb._track._var)=='string' and _G[sb._track._var]))
 		
 		if type(sb._track._update_command) == 'string' then
 			windower.send_command(sb._track._update_command)
