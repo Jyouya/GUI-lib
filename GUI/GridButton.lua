@@ -52,7 +52,7 @@ _meta.GridButton.__methods['draw'] = function(gb)
 		end
 	end	
 	-- display the icon that is currently active
-	windower.prim.set_visibility('%s %s':format(self, gb._track._var.value), true)
+	windower.prim.set_visibility('%s %s':format(self, tostring(gb._track._var.value)), true)
 	
 	-- draw overlay
 	if gb._track._overlay then
@@ -139,10 +139,10 @@ _meta.GridButton.__methods['new icons'] = function(gb, icons, var)
 	end	
 	
 	-- will gb._track._var.value be in scope here?  It would in python
-	if not gb._track._icons:map(function(col) return table.with(col, 'value', gb._track._var.value) and true or false end):contains(true) then
+	if not gb._track._icons:map(function(col) return table.with(col, 'value', tostring(gb._track._var.value)) and true or false end):contains(true) then
 		gb._track._var:set(gb._track._icons[1][1].value)
 	end
-	windower.prim.set_visibility('%s %s':format(self, gb._track._var.value), true)
+	windower.prim.set_visibility('%s %s':format(self, tostring(gb._track._var.value)), true)
 end
 
 _meta.GridButton.__methods['on_mouse'] = function(gb, type, x, y, delta, blocked)
@@ -228,14 +228,14 @@ end
 
 _meta.GridButton.__methods['select'] = function(gb)
 	if gb._track._disabled then return end
-	if gb._track._var.value ~= gb._track._state then
+	if tostring(gb._track._var.value) ~= gb._track._state then
 		for i, col in ipairs(gb._track._icons) do
 			for j, icon in ipairs(col) do
 				windower.prim.set_visibility('%s %s':format(tostring(gb), icon.value),
-				icon.value == gb._track._var.value)
+				icon.value == tostring(gb._track._var.value))
 			end
 		end
-		gb._track._state = gb._track._var.value
+		gb._track._state = tostring(gb._track._var.value)
 		if type(gb._track._update_command) == 'string' then
 			windower.send_command(gb._track._update_command)
 		elseif type(gb._track._update_command) == 'function' then
@@ -246,14 +246,14 @@ end
 
 _meta.GridButton.__methods['update'] = function(gb)
 	if gb._track._disabled then return end
-	if gb._track._var.value ~= gb._track._state then
+	if tostring(gb._track._var.value) ~= gb._track._state then
 		for i, col in ipairs(gb._track._icons) do
 			for j, icon in ipairs(col) do
 				windower.prim.set_visibility('%s %s':format(tostring(gb), icon.value),
-				icon.value == gb._track._var.value)
+				icon.value == tostring(gb._track._var.value))
 			end
 		end
-		gb._track._state = gb._track._var.value
+		gb._track._state = tostring(gb._track._var.value)
 	end
 end
 

@@ -74,6 +74,7 @@ _meta.TextCycle.__methods['draw'] = function(tc) -- Finishes initialization and 
 	--tc._track._update_id = GUI.register_update_object(tc)
 	GUI.register_update_object(tc)
 	
+	return tc
 end
 
 _meta.TextCycle.__methods['hide'] = function(tc)
@@ -84,6 +85,7 @@ _meta.TextCycle.__methods['hide'] = function(tc)
 	for i, v in ipairs(tc._track._var) do
 		windower.text.set_visibility('%s %i':format(self, i), false)
 	end
+	return tc
 end
 
 _meta.TextCycle.__methods['show'] = function(tc)
@@ -94,14 +96,17 @@ _meta.TextCycle.__methods['show'] = function(tc)
 	for i, v in ipairs(tc._track._var) do
 		windower.text.set_visibility('%s %i':format(self, i), i == tc._track._var._track._current)
 	end
+	return tc
 end
 
 _meta.TextCycle.__methods['disable'] = function(tc)
 	tc._track._disabled = true
+	return tc
 end
 
 _meta.TextCycle.__methods['enable'] = function(tc)
 	tc._track._disabled = false
+	return tc
 end
 
 _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization and draws the graphics
@@ -122,7 +127,7 @@ _meta.TextCycle.__methods['update'] = function(tc) -- Finishes initialization an
 		if extentx == 0 then return end
 		
 		local width, height = windower.text.get_extents(desc)
-		desc_w = width
+		local desc_w = width
 		if width < tc._track._minwidth then
 			width = tc._track._minwidth
 		end
@@ -232,6 +237,8 @@ _meta.TextCycle.__methods['undraw'] = function(tc)
 	--GUI.unregister_mouse_listener(tc._track._mouse_id)
 	GUI.unregister_update_object(tc)
 	GUI.unregister_mouse_listener(tc)
+
+	return tc
 end
 
 _meta.TextCycle.__index = function(tc, k)

@@ -91,6 +91,8 @@ _meta.IconButton.__methods['draw'] = function(ib) -- Finishes initialization and
 	--ib._track._update_event = GUI.register_update_object(ib)
 	GUI.register_mouse_listener(ib)
 	GUI.register_update_object(ib)
+
+	return ib
 end
 
 _meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
@@ -138,6 +140,8 @@ _meta.IconButton.__methods['new_icons'] = function(ib, icons, var)
 	if table.with(ib._track._icons, 'value', tostring(ib._track._var.value)) then
 		windower.prim.set_visibility('%s %s':format(self, tostring(ib._track._var.value)), true)
 	end
+
+	return ib
 end
 
 _meta.IconButton.__methods['on_mouse'] = function(ib, type, x, y, delta, blocked)
@@ -186,6 +190,8 @@ _meta.IconButton.__methods['hide'] = function(ib)
 	if ib._track._overlay then
 		ib:hideoverlay()
 	end
+
+	return ib
 end
 
 _meta.IconButton.__methods['show'] = function(ib)
@@ -194,26 +200,36 @@ _meta.IconButton.__methods['show'] = function(ib)
 	for ind, icon in ipairs(ib._track._icons) do
 		windower.prim.set_visibility('%s %s':format(tostring(ib),icon.value), icon.value == tostring(ib._track._var.value))
 	end
+
+	return ib
 end
 
 _meta.IconButton.__methods['showoverlay'] = function(ib)
 	windower.prim.set_visibility('%s overlay':format(tostring(ib)), true)
 	ib._track._show_overlay = true
+
+	return ib
 end
 
 _meta.IconButton.__methods['hideoverlay'] = function(ib)
 	windower.prim.set_visibility('%s overlay':format(tostring(ib)), false)
 	ib._track._show_overlay = false
+
+	return ib
 end
 
 _meta.IconButton.__methods['disable'] = function(ib)
 	ib._track._disabled = true
 	--ib:hide()
+
+	return ib
 end
 
 _meta.IconButton.__methods['enable'] = function(ib)
 	ib._track._disabled = false
 	--ib:show()
+
+	return ib
 end
 
 _meta.IconButton.__methods['press'] = function(ib)
@@ -221,12 +237,16 @@ _meta.IconButton.__methods['press'] = function(ib)
 	ib._track._pressed = true
 	windower.prim.set_visibility('%s press':format(tostring(ib)), true)
 	ib._track._iconPalette:show()
+
+	return ib
 end
 
 _meta.IconButton.__methods['unpress'] = function(ib)
 	ib._track._pressed = false
 	windower.prim.set_visibility('%s press':format(tostring(ib)), false)
 	ib._track._iconPalette:hide()
+
+	return ib
 end
 
 _meta.IconButton.__methods['select'] = function(ib)
@@ -274,7 +294,9 @@ _meta.IconButton.__methods['undraw'] = function(ib)
 	end
 	ib._track._iconPalette:undraw()
 	GUI.unregister_mouse_listener(ib)--._track._mouse_event)
-	GUI.unregister_update_object(ib)--._track._update_event)	
+	GUI.unregister_update_object(ib)--._track._update_event)
+	
+	return ib
 end
 
 function GUI.palette_y_align(y, size)
